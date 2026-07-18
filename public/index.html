@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>InSpace · Glance</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/dist/tabler-icons.min.css" />
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --bg:        #0E0F14;
+  --bg-card:   #15161D;
+  --bg-lift:   #1C1D27;
+  --border:    rgba(255,255,255,0.07);
+  --border-md: rgba(255,255,255,0.12);
+  --ink:       #F0F0F5;
+  --ink-2:     #A9ABBE;
+  --ink-3:     #656882;
+  --green:     #2EE89A;
+  --green-dim: rgba(46,232,154,0.10);
+  --green-glow:rgba(46,232,154,0.18);
+  --amber:     #F5A623;
+  --amber-dim: rgba(245,166,35,0.10);
+  --red:       #FF5A50;
+  --red-dim:   rgba(255,90,80,0.10);
+  --blue:      #5C9EFF;
+  --blue-dim:  rgba(92,158,255,0.10);
+  --font-ui:   'Inter', system-ui, sans-serif;
+  --font-mono: 'DM Mono', 'Courier New', monospace;
+  --radius:    12px;
+  --radius-lg: 16px;
+}
+html { background: var(--bg); }
+body {
+  font-family: var(--font-ui);
+  background: var(--bg);
+  color: var(--ink);
+  min-height: 100vh;
+  padding: 2rem 1rem 4rem;
+  display: flex;
+  justify-content: center;
+}
+.wrap { width: 100%; max-width: 640px; }
+
+/* HEADER */
+.header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.75rem; }
+.brand { display: flex; align-items: center; gap: 12px; }
+.brand-mark {
+  width: 36px; height: 36px; border-radius: 10px;
+  background: linear-gradient(135deg, #2EE89A 0%, #1ac47e 100%);
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 0 16px var(--green-glow); flex-shrink: 0;
+}
+.brand-mark i { font-size: 17px; color: #0E0F14; }
+.brand-name { font-size: 14px; font-weight: 600; }
+.brand-sub  { font-size: 11px; color: var(--ink-3); margin-top: 1px; }
+.badge {
+  display: inline-flex; align-items: center; gap: 5px;
+  font-size: 11px; font-weight: 500; color: var(--green);
+  background: var(--green-dim); border: 1px solid rgba(46,232,154,0.2);
+  padding: 5px 10px; border-radius: 20px;
+}
+
+/* URL PANEL */
+.url-panel {
+  background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: var(--radius-lg); padding: 1.25rem; margin-bottom: 1.5rem;
+  transition: border-color .2s;
+}
+.url-panel:focus-within { border-color: var(--border-md); }
+.url-label {
+  font-size: 10px; font-weight: 600; color: var(--ink-3);
+  letter-spacing: .08em; text-transform: uppercase;
+  margin-bottom: .75rem; display: flex; align-items: center; gap: 6px;
+}
+.url-row { display: flex; gap: 8px; }
+.url-input {
+  flex: 1; background: var(--bg-lift); border: 1px solid var(--border-md);
+  border-radius: var(--radius); padding: .65rem 1rem;
+  font-family: var(--font-mono); font-size: 13px; color: var(--ink); outline: none;
+  transition: border-color .15s, box-shadow .15s;
+}
+.url-input::placeholder { color: var(--ink-3); }
+.url-input:focus { border-color: rgba(46,232,154,.35); box-shadow: 0 0 0 3px rgba(46,232,154,.08); }
+.analyze-btn {
+  display: flex; align-items: center; gap: 7px;
+  padding: .65rem 1.1rem; background: var(--green); color: #0E0F14;
+  font-family: var(--font-ui); font-size: 13px; font-weight: 600;
+  border: none; border-radius: var(--radius); cursor: pointer;
+  transition: opacity .15s, transform .1s; white-space: nowrap;
+}
+.analyze-btn:hover { opacity: .9; }
+.analyze-btn:active { transform: scale(.98); }
+.analyze-btn:disabled { opacity: .4; cursor: not-allowed; transform: none; }
+
+/* PROSPECT CHIP */
+.prospect-chip {
+  display: none; align-items: center; gap: 10px;
+  background: var(--bg-lift); border: 1px solid var(--border-md);
+  border-radius: var(--radius); padding: .55rem .9rem; margin-top: .85rem;
+}
+.prospect-chip.visible { display: flex; }
+.chip-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--green); box-shadow: 0 0 6px var(--green-glow); flex-shrink: 0; }
+.chip-label { font-size: 12px; color: var(--ink-2); flex: 1; }
+.chip-label strong { color: var(--ink); font-weight: 500; }
+.chip-reset { background: none; border: none; cursor: pointer; color: var(--ink-3); font-size: 15px; display: flex; align-items: center; transition: color .15s; }
+.chip-reset:hover { color: var(--red); }
+
+/* ERROR */
+.error-msg {
+  display: none; align-items: center; gap: 8px; font-size: 13px;
+  color: var(--red); background: var(--red-dim);
+  border: 1px solid rgba(255,90,80,.2); padding: .6rem .9rem;
+  border-radius: 8px; margin-top: .75rem;
+}
+.error-msg.visible { display: flex; }
+
+/* LOADING */
+.loading-panel {
+  display: none; flex-direction: column; align-items: center;
+  justify-content: center; padding: 2.5rem 1rem; gap: 1rem; text-align: center;
+}
+.loading-panel.visible { display: flex; }
+.loading-ring {
+  width: 40px; height: 40px; border-radius: 50%;
+  border: 2px solid var(--border-md); border-top-color: var(--green);
+  animation: spin .8s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+.loading-title { font-size: 14px; font-weight: 500; }
+.loading-steps { display: flex; flex-direction: column; gap: 6px; }
+.loading-step { display: flex; align-items: center; gap: 8px; font-size: 12px; color: var(--ink-3); transition: color .3s; }
+.loading-step.done   { color: var(--green); }
+.loading-step.active { color: var(--ink-2); }
+
+/* PHASE */
+.phase-card { display: none; }
+.phase-card.visible { display: block; animation: fadeUp .2s ease; }
+@keyframes fadeUp { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:translateY(0); } }
+.phase-eyebrow { display: flex; align-items: center; gap: 10px; margin-bottom: .6rem; }
+.phase-num { font-family: var(--font-mono); font-size: 11px; color: var(--green); letter-spacing: .1em; }
+.phase-rule { flex: 1; height: 1px; background: var(--border); }
+.phase-h { font-size: 21px; font-weight: 600; letter-spacing: -.01em; margin-bottom: 1.25rem; }
+
+/* CARD */
+.card {
+  background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: var(--radius-lg); padding: 1rem 1.2rem; margin-bottom: .75rem;
+  transition: border-color .15s;
+}
+.card:hover { border-color: var(--border-md); }
+.card-label {
+  display: flex; align-items: center; gap: 6px;
+  font-size: 10px; font-weight: 600; color: var(--ink-3);
+  letter-spacing: .08em; text-transform: uppercase; margin-bottom: .8rem;
+}
+
+/* NOTE */
+.note {
+  display: flex; gap: 11px; padding: .85rem 1rem;
+  background: var(--bg-lift); border-radius: var(--radius);
+  border: 1px solid var(--border); margin-bottom: .75rem;
+}
+.note-icon { font-size: 15px; color: var(--amber); flex-shrink: 0; margin-top: 2px; }
+.note-title { font-size: 10px; font-weight: 600; color: var(--ink); letter-spacing: .07em; text-transform: uppercase; margin-bottom: 4px; }
+.note-body  { font-size: 13px; color: var(--ink-2); line-height: 1.65; }
+
+/* GLANCE GRID — 4 base signals */
+.glance-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 0; }
+.glance-row {
+  display: flex; align-items: flex-start; gap: 9px;
+  font-size: 13px; color: var(--ink-2); line-height: 1.5;
+  background: var(--bg-lift); border-radius: 8px; padding: .6rem .75rem;
+}
+.glance-row i { font-size: 14px; flex-shrink: 0; margin-top: 1px; }
+.glance-row i.green { color: var(--green); }
+.glance-row i.amber { color: var(--amber); }
+
+/* SIGNAL CARDS — AI / SEO / Google rank */
+.signals { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-bottom: .75rem; }
+.sig {
+  background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: .85rem .9rem;
+  display: flex; flex-direction: column; gap: 6px;
+  transition: border-color .15s;
+}
+.sig:hover { border-color: var(--border-md); }
+.sig-label {
+  font-size: 10px; font-weight: 600; letter-spacing: .07em;
+  text-transform: uppercase; color: var(--ink-3);
+  display: flex; align-items: center; gap: 5px;
+}
+.sig-label i { font-size: 12px; }
+.sig-value { font-size: 14px; font-weight: 600; line-height: 1.3; }
+.sig-sub { font-size: 11px; color: var(--ink-3); line-height: 1.4; }
+
+/* status colours */
+.status-green { color: var(--green); }
+.status-red   { color: var(--red); }
+.status-amber { color: var(--amber); }
+.status-blue  { color: var(--blue); }
+
+.sig.border-green { border-color: rgba(46,232,154,.25); background: rgba(46,232,154,.03); }
+.sig.border-red   { border-color: rgba(255,90,80,.25);  background: rgba(255,90,80,.03); }
+.sig.border-amber { border-color: rgba(245,166,35,.25); background: rgba(245,166,35,.03); }
+.sig.border-blue  { border-color: rgba(92,158,255,.25); background: rgba(92,158,255,.03); }
+
+.filled { color: var(--amber); font-weight: 500; }
+
+/* skeleton pulse while loading signals */
+.skeleton {
+  height: 14px; border-radius: 4px;
+  background: linear-gradient(90deg, var(--bg-lift) 25%, var(--bg-raise, #222330) 50%, var(--bg-lift) 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.4s infinite;
+}
+@keyframes shimmer { to { background-position: -200% 0; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- HEADER -->
+  <div class="header">
+    <div class="brand">
+      <div class="brand-mark"><i class="ti ti-phone-call"></i></div>
+      <div>
+        <div class="brand-name">InSpace · Glance</div>
+        <div class="brand-sub">5-second prospect read</div>
+      </div>
+    </div>
+    <span class="badge"><i class="ti ti-eye"></i>Live Scan</span>
+  </div>
+
+  <!-- URL INPUT -->
+  <div class="url-panel">
+    <div class="url-label"><i class="ti ti-world"></i>Prospect website</div>
+    <div class="url-row">
+      <input class="url-input" id="urlInput" type="url" placeholder="https://prospect-company.com" autocomplete="off" spellcheck="false" />
+      <button class="analyze-btn" id="analyzeBtn" onclick="runAnalysis()">
+        <i class="ti ti-sparkles"></i>Analyze
+      </button>
+    </div>
+    <div class="error-msg" id="errorMsg"><i class="ti ti-alert-circle"></i><span id="errorText"></span></div>
+    <div class="prospect-chip" id="prospectChip">
+      <div class="chip-dot"></div>
+      <div class="chip-label" id="chipLabel"></div>
+      <button class="chip-reset" onclick="reset()" title="Analyze another"><i class="ti ti-x"></i></button>
+    </div>
+  </div>
+
+  <!-- LOADING -->
+  <div class="loading-panel" id="loadingPanel">
+    <div class="loading-ring"></div>
+    <div class="loading-title">Scanning prospect…</div>
+    <div class="loading-steps">
+      <div class="loading-step" id="ls0"><i class="ti ti-globe"></i>Fetching website content</div>
+      <div class="loading-step" id="ls1"><i class="ti ti-brain"></i>Identifying niche &amp; location</div>
+      <div class="loading-step" id="ls2"><i class="ti ti-robot"></i>Checking AI platform visibility</div>
+      <div class="loading-step" id="ls3"><i class="ti ti-search"></i>Checking SEO &amp; Google rank</div>
+    </div>
+  </div>
+
+  <!-- GLANCE CARD -->
+  <div id="glance" class="phase-card">
+    <div class="phase-eyebrow"><span class="phase-num">00</span><div class="phase-rule"></div></div>
+    <div class="phase-h">Live glance — 5-second read</div>
+
+    <div class="note">
+      <i class="ti ti-bolt note-icon"></i>
+      <div>
+        <div class="note-title">Auto-dialer protocol</div>
+        <div class="note-body">The second the line connects, open their site. Pull one real signal in 5 seconds — that signal becomes your opener. Never stall, never apologise.</div>
+      </div>
+    </div>
+
+    <!-- BASE SIGNALS -->
+    <div class="card">
+      <div class="card-label"><i class="ti ti-checklist"></i>Site signals</div>
+      <div class="glance-grid" id="glanceGrid">
+        <div class="glance-row"><i class="ti ti-circle-check green"></i><span>Service or product? (no shop = service)</span></div>
+        <div class="glance-row"><i class="ti ti-circle-check green"></i><span>Their niche in 2–3 words</span></div>
+        <div class="glance-row"><i class="ti ti-circle-check green"></i><span>City or region in footer or header</span></div>
+        <div class="glance-row"><i class="ti ti-circle-check green"></i><span>A competitor brand to name-drop</span></div>
+      </div>
+    </div>
+
+    <!-- DEEP SIGNALS: AI / SEO / Google -->
+    <div class="card">
+      <div class="card-label"><i class="ti ti-radar"></i>Deep signals</div>
+      <div class="signals" id="signalsGrid">
+        <div class="sig"><div class="sig-label"><i class="ti ti-robot"></i>AI Visibility</div><div class="skeleton" style="width:60%;margin-top:4px"></div><div class="skeleton" style="width:80%;margin-top:6px;height:11px"></div></div>
+        <div class="sig"><div class="sig-label"><i class="ti ti-chart-line"></i>SEO Activity</div><div class="skeleton" style="width:50%;margin-top:4px"></div><div class="skeleton" style="width:75%;margin-top:6px;height:11px"></div></div>
+        <div class="sig"><div class="sig-label"><i class="ti ti-brand-google"></i>Google Rank</div><div class="skeleton" style="width:45%;margin-top:4px"></div><div class="skeleton" style="width:70%;margin-top:6px;height:11px"></div></div>
+      </div>
+    </div>
+
+    <div class="note">
+      <i class="ti ti-info-circle note-icon"></i>
+      <div>
+        <div class="note-title">Site loads too slow?</div>
+        <div class="note-body">Default to company name alone. "I just looked up [Company] on ChatGPT…" still lands.</div>
+      </div>
+    </div>
+  </div>
+
+</div>
+<script>
+let loadTimer = null, loadStep = 0;
+
+function startLoadingSteps() {
+  loadStep = 0;
+  document.querySelectorAll('.loading-step').forEach(el => el.className = 'loading-step');
+  stepLoad();
+}
+function stepLoad() {
+  const steps = document.querySelectorAll('.loading-step');
+  if (loadStep > 0) steps[loadStep - 1].className = 'loading-step done';
+  if (loadStep < steps.length) {
+    steps[loadStep].className = 'loading-step active';
+    loadStep++;
+    loadTimer = setTimeout(stepLoad, 2400);
+  }
+}
+function stopLoadingSteps() {
+  clearTimeout(loadTimer);
+  document.querySelectorAll('.loading-step').forEach(el => el.className = 'loading-step done');
+}
+function setLoading(on) {
+  document.getElementById('loadingPanel').classList.toggle('visible', on);
+  document.getElementById('analyzeBtn').disabled = on;
+  document.getElementById('urlInput').disabled = on;
+}
+function showError(msg) { document.getElementById('errorText').textContent = msg; document.getElementById('errorMsg').classList.add('visible'); }
+function hideError()    { document.getElementById('errorMsg').classList.remove('visible'); }
+function escHtml(s)     { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+
+async function runAnalysis() {
+  let url = document.getElementById('urlInput').value.trim();
+  if (!url) return;
+  if (!url.startsWith('http')) url = 'https://' + url;
+  try { new URL(url); } catch(e) { showError('Please enter a valid URL.'); return; }
+
+  hideError();
+  setLoading(true);
+  startLoadingSteps();
+
+  try {
+    // Calls our own serverless function — the real Anthropic API key
+    // lives server-side in api/analyze.js, never in this browser code.
+    const res = await fetch('/api/analyze', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ url })
+    });
+    const d = await res.json();
+    if (!res.ok) throw new Error(d.error || 'API error');
+
+    stopLoadingSteps();
+    applyAnalysis(d);
+  } catch(err) {
+    stopLoadingSteps();
+    setLoading(false);
+    showError(err.message || 'Analysis failed. Please try again.');
+  }
+}
+
+function applyAnalysis(d) {
+  document.getElementById('glanceGrid').innerHTML = `
+    <div class="glance-row"><i class="ti ti-circle-check green"></i><span>Type: <span class="filled">${escHtml(d.businessType === 'service' ? 'Service business' : 'Product / e-com')}</span></span></div>
+    <div class="glance-row"><i class="ti ti-circle-check green"></i><span>Niche: <span class="filled">${escHtml(d.niche)}</span></span></div>
+    <div class="glance-row"><i class="ti ti-circle-check green"></i><span>Location: <span class="filled">${escHtml(d.city)}</span></span></div>
+    <div class="glance-row"><i class="ti ti-circle-check green"></i><span>Competitor: <span class="filled">${escHtml(d.competitor)}</span></span></div>
+  `;
+
+  const aiMap = {
+    yes:     { cls: 'border-green', valCls: 'status-green', icon: 'ti-robot', label: 'Visible',  },
+    partial: { cls: 'border-amber', valCls: 'status-amber', icon: 'ti-robot', label: 'Partial',  },
+    no:      { cls: 'border-red',   valCls: 'status-red',   icon: 'ti-robot', label: 'Not Found', },
+  };
+  const ai = aiMap[d.aiVisibility] || aiMap.no;
+
+  const seoMap = {
+    yes:   { cls: 'border-green', valCls: 'status-green', label: 'Active' },
+    basic: { cls: 'border-amber', valCls: 'status-amber', label: 'Basic'  },
+    no:    { cls: 'border-red',   valCls: 'status-red',   label: 'None'   },
+  };
+  const seo = seoMap[d.seoActive] || seoMap.no;
+
+  const pg = parseInt(d.googlePageNumber) || 3;
+  let rankCls, rankValCls, rankLabel;
+  if (pg === 1)      { rankCls = 'border-green'; rankValCls = 'status-green'; rankLabel = 'Page 1'; }
+  else if (pg === 2) { rankCls = 'border-amber'; rankValCls = 'status-amber'; rankLabel = 'Page 2'; }
+  else               { rankCls = 'border-red';   rankValCls = 'status-red';   rankLabel = `Page ${pg}+`; }
+
+  document.getElementById('signalsGrid').innerHTML = `
+    <div class="sig ${ai.cls}">
+      <div class="sig-label"><i class="ti ${ai.icon}"></i>AI Visibility</div>
+      <div class="sig-value ${ai.valCls}">${ai.label}</div>
+      <div class="sig-sub">${escHtml(d.aiVisibilityNote || '')}</div>
+    </div>
+    <div class="sig ${seo.cls}">
+      <div class="sig-label"><i class="ti ti-chart-line"></i>SEO Activity</div>
+      <div class="sig-value ${seo.valCls}">${seo.label}</div>
+      <div class="sig-sub">${escHtml(d.seoNote || '')}</div>
+    </div>
+    <div class="sig ${rankCls}">
+      <div class="sig-label"><i class="ti ti-brand-google"></i>Google Rank</div>
+      <div class="sig-value ${rankValCls}">${rankLabel}</div>
+      <div class="sig-sub">${escHtml(d.googleRankNote || '')}</div>
+    </div>
+  `;
+
+  document.getElementById('chipLabel').innerHTML = `Ready for <strong>${escHtml(d.companyName)}</strong> · ${escHtml(d.niche)} · ${escHtml(d.city)}`;
+  document.getElementById('prospectChip').classList.add('visible');
+
+  setLoading(false);
+  document.getElementById('glance').classList.add('visible');
+}
+
+function reset() {
+  document.getElementById('urlInput').value = '';
+  document.getElementById('prospectChip').classList.remove('visible');
+  document.getElementById('glance').classList.remove('visible');
+  document.getElementById('glanceGrid').innerHTML = `
+    <div class="glance-row"><i class="ti ti-circle-check green"></i><span>Service or product? (no shop = service)</span></div>
+    <div class="glance-row"><i class="ti ti-circle-check green"></i><span>Their niche in 2–3 words</span></div>
+    <div class="glance-row"><i class="ti ti-circle-check green"></i><span>City or region in footer or header</span></div>
+    <div class="glance-row"><i class="ti ti-circle-check green"></i><span>A competitor brand to name-drop</span></div>
+  `;
+  document.getElementById('signalsGrid').innerHTML = `
+    <div class="sig"><div class="sig-label"><i class="ti ti-robot"></i>AI Visibility</div><div class="skeleton" style="width:60%;margin-top:4px"></div><div class="skeleton" style="width:80%;margin-top:6px;height:11px"></div></div>
+    <div class="sig"><div class="sig-label"><i class="ti ti-chart-line"></i>SEO Activity</div><div class="skeleton" style="width:50%;margin-top:4px"></div><div class="skeleton" style="width:75%;margin-top:6px;height:11px"></div></div>
+    <div class="sig"><div class="sig-label"><i class="ti ti-brand-google"></i>Google Rank</div><div class="skeleton" style="width:45%;margin-top:4px"></div><div class="skeleton" style="width:70%;margin-top:6px;height:11px"></div></div>
+  `;
+  hideError();
+}
+
+document.getElementById('urlInput').addEventListener('keydown', e => { if (e.key === 'Enter') runAnalysis(); });
+</script>
+</body>
+</html>
