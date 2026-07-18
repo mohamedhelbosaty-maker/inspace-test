@@ -1,7 +1,11 @@
 {
-  "functions": {
-    "api/analyze.js": {
-      "runtime": "nodejs20.x"
-    }
+  "name": "inspace-glance",
+  "version": "1.0.0",
+  "private": true,
+  "engines": {
+    "node": "20.x"
+  },
+  "scripts": {
+    "dev": "vercel dev"
   }
 }
