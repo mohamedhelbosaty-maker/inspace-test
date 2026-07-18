@@ -1,16 +1,19 @@
 // api/analyze.js
-// Vercel Serverless Function — proxies the Anthropic API call server-side
+// Vercel Serverless Function — proxies the Gemini API call server-side
 // so the real API key never touches the browser.
 //
 // Setup: in your Vercel project settings, add an Environment Variable
-//   ANTHROPIC_API_KEY = sk-ant-...
+//   GEMINI_API_KEY = AIza...
 // (Project Settings → Environment Variables → Production + Preview)
+// Get a free key at https://aistudio.google.com/apikey
 
 export const config = {
   runtime: 'nodejs',
 };
 
-const SYSTEM_PROMPT = `You are an elite SDR analyst with web search access. Analyze the prospect website thoroughly and return ONLY a valid JSON object, no markdown, no extra text.
+const GEMINI_MODEL = 'gemini-2.5-flash';
+
+const SYSTEM_PROMPT = `You are an elite SDR analyst with web search access. Analyze the prospect website thoroughly and return ONLY a valid JSON object, no markdown, no extra text, no code fences.
 
 Required fields:
 {
@@ -32,22 +35,21 @@ Required fields:
 
 Use your web search tool to:
 1. Search '[niche] [city]' on Google to estimate their page ranking.
-2. Search the company name on Perplexity or check if they appear in AI recommendation contexts.
+2. Search the company name to check if they appear in AI recommendation contexts.
 3. Check their site for SEO signals (meta tags, blog, schema markup).
 
 Be specific and honest. If you can't verify something, make a reasonable inference and note it.`;
 
 export default async function handler(req, res) {
-  // CORS / method guard
   if (req.method !== 'POST') {
     res.setHeader('Allow', 'POST');
     return res.status(405).json({ error: 'Method not allowed. Use POST.' });
   }
 
-  const apiKey = process.env.ANTHROPIC_API_KEY;
+  const apiKey = process.env.GEMINI_API_KEY;
   if (!apiKey) {
     return res.status(500).json({
-      error: 'Server misconfigured: ANTHROPIC_API_KEY is not set in the environment.',
+      error: 'Server misconfigured: GEMINI_API_KEY is not set in the environment.',
     });
   }
 
@@ -56,7 +58,6 @@ export default async function handler(req, res) {
     return res.status(400).json({ error: 'Missing "url" in request body.' });
   }
 
-  // Basic URL validation
   let parsed;
   try {
     parsed = new URL(url.startsWith('http') ? url : `https://${url}`);
@@ -65,37 +66,42 @@ export default async function handler(req, res) {
   }
 
   try {
-    const anthropicRes = await fetch('https://api.anthropic.com/v1/messages', {
+    const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent?key=${apiKey}`;
+
+    const geminiRes = await fetch(endpoint, {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'x-api-key': apiKey,
-        'anthropic-version': '2023-06-01',
-      },
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        model: 'claude-sonnet-4-6',
-        max_tokens: 1000,
-        system: SYSTEM_PROMPT,
-        tools: [{ type: 'web_search_20250305', name: 'web_search' }],
-        messages: [
+        system_instruction: {
+          parts: [{ text: SYSTEM_PROMPT }],
+        },
+        contents: [
           {
             role: 'user',
-            content: `Analyze this prospect website and check their AI visibility, SEO activity, and Google ranking: ${parsed.toString()}`,
+            parts: [
+              {
+                text: `Analyze this prospect website and check their AI visibility, SEO activity, and Google ranking: ${parsed.toString()}`,
+              },
+            ],
           },
         ],
+        tools: [{ google_search: {} }],
+        generationConfig: {
+          maxOutputTokens: 1000,
+        },
       }),
     });
 
-    const data = await anthropicRes.json();
+    const data = await geminiRes.json();
 
-    if (!anthropicRes.ok) {
-      return res.status(anthropicRes.status).json({
-        error: data?.error?.message || 'Anthropic API request failed.',
+    if (!geminiRes.ok) {
+      return res.status(geminiRes.status).json({
+        error: data?.error?.message || 'Gemini API request failed.',
       });
     }
 
-    const text = (data.content || [])
-      .map((block) => (block.type === 'text' ? block.text : ''))
+    const text = (data.candidates?.[0]?.content?.parts || [])
+      .map((part) => part.text || '')
       .join('\n');
 
     const match = text.match(/\{[\s\S]*\}/);
@@ -112,7 +118,7 @@ export default async function handler(req, res) {
 
     return res.status(200).json(parsedResult);
   } catch (err) {
-    console.error('Anthropic API error:', err);
-    return res.status(500).json({ error: 'Unexpected server error calling Anthropic API.' });
+    console.error('Gemini API error:', err);
+    return res.status(500).json({ error: 'Unexpected server error calling Gemini API.' });
   }
 }
