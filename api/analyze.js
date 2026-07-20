@@ -24,21 +24,23 @@ Required fields:
   "competitor": "one plausible real or realistic competitor brand in same niche",
 
   "aiVisibility": "yes" | "no" | "partial",
-  "aiVisibilityNote": "1 short sentence — which AI platforms mention them (ChatGPT/Perplexity/etc) or why they don't show up",
+  "aiVisibilityNote": "1–2 short sentences — tactical problem they don't know they have, not a research finding",
 
   "seoActive": "yes" | "no" | "basic",
-  "seoNote": "1 short sentence — evidence of SEO: blog, meta tags, structured data, backlinks, etc. or lack thereof",
+  "seoNote": "1–2 short sentences — specific gap they could fill or improvement they could make. E.g. 'Their blog could use articles about X' or 'They're missing meta descriptions on key service pages'",
 
   "googlePageNumber": number — estimated Google page (1, 2, 3, etc.) for their main niche+city keyword. Use web search to check. If rank is unknown default to 3,
-  "googleRankNote": "1 short sentence — what keyword you checked and what you found"
+  "googleRankNote": "1–2 short sentences — why this ranking matters for their business or what they're missing",
+
+  "openingLine": "one punchy sentence the SDR can say verbatim on the call. Pattern: If [keyword + location] on [AI/Google], [competitor] shows up, you don't. Frame as a problem or gap they didn't know existed. No question marks, no wishy-washy language. Make it land in one breath."
 }
 
 Use your web search tool to:
 1. Search '[niche] [city]' on Google to estimate their page ranking.
-2. Search the company name to check if they appear in AI recommendation contexts.
+2. Search the company name on ChatGPT, Perplexity, or check if they appear in AI recommendation contexts.
 3. Check their site for SEO signals (meta tags, blog, schema markup).
 
-Be specific and honest. If you can't verify something, make a reasonable inference and note it.`;
+Be specific and honest. Focus on what the SDR can USE — gaps to fill, problems to highlight, competitors winning where they're not. Write for the call, not for research. If you can't verify something, make a reasonable inference and note it.`;
 
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
