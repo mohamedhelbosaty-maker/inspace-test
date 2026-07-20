@@ -3,7 +3,7 @@
 // so the real API key never touches the browser.
 //
 // Setup: in your Vercel project settings, add an Environment Variable
-//   GEMINI_API_KEY = AIza...
+//   GEMINI_API_KEY = AIzaSyDPSe3gzzVxMclI6mZMRAUb1gbaDdaeecs
 // (Project Settings → Environment Variables → Production + Preview)
 // Get a free key at https://aistudio.google.com/apikey
 
