@@ -3,7 +3,7 @@
 // so the real API key never touches the browser.
 //
 // Setup: in your Vercel project settings, add an Environment Variable
-//   GEMINI_API_KEY = AQ.Ab8RN6JORaULCszAsw87jX5E3OfiA1wqCywDWIA3ehpihIxFyg
+//   GEMINI_API_KEY = AIza...
 // (Project Settings → Environment Variables → Production + Preview)
 // Get a free key at https://aistudio.google.com/apikey
 
@@ -66,11 +66,14 @@ export default async function handler(req, res) {
   }
 
   try {
-    const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent?key=${apiKey}`;
+    const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent`;
 
     const geminiRes = await fetch(endpoint, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: {
+        'Content-Type': 'application/json',
+        'x-goog-api-key': apiKey,
+      },
       body: JSON.stringify({
         system_instruction: {
           parts: [{ text: SYSTEM_PROMPT }],
