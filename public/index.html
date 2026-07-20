@@ -192,11 +192,11 @@ body {
 .filled { color: var(--white); font-weight: 700; }
 
 /* SIGNAL CARDS — status uses only Houston Green (confirm) / Nova Purple (attention) / muted Ink (neutral) */
-.signals { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-bottom: .75rem; }
+.signals { display: grid; grid-template-columns: 1fr; gap: 8px; margin-bottom: .75rem; }
 .sig {
   background: var(--ink); border: 1px solid var(--ink-10);
   border-radius: var(--r-12); padding: .9rem .9rem;
-  display: flex; flex-direction: column; gap: 6px;
+  display: flex; flex-direction: column; gap: 5px;
   transition: border-color var(--ease);
 }
 .sig-label {
@@ -205,7 +205,13 @@ body {
   text-transform: uppercase; color: var(--ink-42);
 }
 .sig-value { font-size: 14px; font-weight: 700; line-height: 1.3; }
-.sig-sub { font-size: 11px; color: var(--ink-42); line-height: 1.4; }
+.sig-block-label {
+  font-family: var(--font-mono); font-size: 9px; font-weight: 700;
+  letter-spacing: .06em; text-transform: uppercase; margin-top: 2px;
+}
+.sig-block-label.problem { color: var(--purple); }
+.sig-block-label.opportunity { color: var(--houston); }
+.sig-block-text { font-size: 11.5px; color: var(--white); line-height: 1.45; opacity: .85; }
 
 .status-good    { color: var(--houston); }
 .status-attn    { color: var(--purple); }
@@ -410,6 +416,7 @@ function copyOpener() {
 }
 
 function applyAnalysis(d) {
+  // Set the opener line — the one sentence they say on the call
   document.getElementById('openerLine').textContent = escHtml(d.openingLine || 'Check their AI visibility and Google ranking above.');
   document.getElementById('copyBtn').classList.remove('copied');
 
@@ -420,6 +427,7 @@ function applyAnalysis(d) {
     <div class="glance-row"><span class="tick"></span><span>Competitor: <span class="filled">${escHtml(d.competitor)}</span></span></div>
   `;
 
+  // Brand rule: no traffic-light red/amber. Confirmation = Houston Green, attention = Nova Purple.
   const aiMap = {
     yes:     { cls: 'border-good',    valCls: 'status-good',    label: 'Visible'   },
     partial: { cls: 'border-neutral', valCls: 'status-neutral', label: 'Partial'   },
@@ -444,17 +452,26 @@ function applyAnalysis(d) {
     <div class="sig ${ai.cls}">
       <div class="sig-label">AI Visibility</div>
       <div class="sig-value ${ai.valCls}">${ai.label}</div>
-      <div class="sig-sub">${escHtml(d.aiVisibilityNote || '')}</div>
+      <div class="sig-block-label problem">Problem</div>
+      <div class="sig-block-text">${escHtml(d.aiProblem || '')}</div>
+      <div class="sig-block-label opportunity">Opportunity</div>
+      <div class="sig-block-text">${escHtml(d.aiOpportunity || '')}</div>
     </div>
     <div class="sig ${seo.cls}">
       <div class="sig-label">SEO Activity</div>
       <div class="sig-value ${seo.valCls}">${seo.label}</div>
-      <div class="sig-sub">${escHtml(d.seoNote || '')}</div>
+      <div class="sig-block-label problem">Problem</div>
+      <div class="sig-block-text">${escHtml(d.seoProblem || '')}</div>
+      <div class="sig-block-label opportunity">Opportunity</div>
+      <div class="sig-block-text">${escHtml(d.seoOpportunity || '')}</div>
     </div>
     <div class="sig ${rankCls}">
       <div class="sig-label">Google Rank</div>
       <div class="sig-value ${rankValCls}">${rankLabel}</div>
-      <div class="sig-sub">${escHtml(d.googleRankNote || '')}</div>
+      <div class="sig-block-label problem">Problem</div>
+      <div class="sig-block-text">${escHtml(d.rankProblem || '')}</div>
+      <div class="sig-block-label opportunity">Opportunity</div>
+      <div class="sig-block-text">${escHtml(d.rankOpportunity || '')}</div>
     </div>
   `;
 
