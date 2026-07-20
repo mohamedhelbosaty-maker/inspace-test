@@ -3,7 +3,7 @@
 // so the real API key never touches the browser.
 //
 // Setup: in your Vercel project settings, add an Environment Variable
-//   GEMINI_API_KEY = AIza...
+//   GEMINI_API_KEY = AQ... (or AIza..., whichever format your account issues)
 // (Project Settings → Environment Variables → Production + Preview)
 // Get a free key at https://aistudio.google.com/apikey
 
@@ -90,7 +90,10 @@ export default async function handler(req, res) {
         ],
         tools: [{ google_search: {} }],
         generationConfig: {
-          maxOutputTokens: 1000,
+          maxOutputTokens: 2048,
+          thinkingConfig: {
+            thinkingBudget: 0,
+          },
         },
       }),
     });
@@ -109,7 +112,10 @@ export default async function handler(req, res) {
 
     const match = text.match(/\{[\s\S]*\}/);
     if (!match) {
-      return res.status(502).json({ error: 'Could not parse a JSON result from the model response.' });
+      const finishReason = data.candidates?.[0]?.finishReason || 'unknown';
+      return res.status(502).json({
+        error: `Could not parse a JSON result from the model response (finishReason: ${finishReason}).`,
+      });
     }
 
     let parsedResult;
