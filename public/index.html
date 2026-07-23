@@ -406,8 +406,8 @@ function renderHistory() {
   container.innerHTML = `<div class="history-list">${history.map((h, i) => `
     <button class="history-item" onclick="loadFromHistory(${i})">
       <div class="history-item-main">
-        <div class="history-item-name">${escHtml(h.companyName)}</div>
-        <div class="history-item-sub">${escHtml(h.niche)} · ${escHtml(h.city)}</div>
+        <div class="history-item-name">${escHtml(h.data.companyName)}</div>
+        <div class="history-item-sub">${escHtml(h.data.niche)} · ${escHtml(h.data.city)}</div>
       </div>
       <div class="history-item-time">${timeAgo(h.timestamp)}</div>
     </button>
@@ -418,7 +418,10 @@ function loadFromHistory(index) {
   const entry = history[index];
   if (!entry) return;
   document.getElementById('urlInput').value = entry.url;
-  runAnalysis();
+  currentAnalyzedUrl = entry.url;
+  hideError();
+  applyAnalysis(entry.data, { fromHistory: true });
+  window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
 async function runAnalysis() {
@@ -459,7 +462,7 @@ function copyOpener() {
   });
 }
 
-function applyAnalysis(d) {
+function applyAnalysis(d, opts = {}) {
   document.getElementById('openerLine').textContent = escHtml(d.openingLine || 'Check their AI visibility and Google ranking above.');
   document.getElementById('copyBtn').classList.remove('copied');
 
@@ -520,13 +523,13 @@ function applyAnalysis(d) {
   document.getElementById('chipLabel').innerHTML = `Ready for <strong>${escHtml(d.companyName)}</strong> · ${escHtml(d.niche)} · ${escHtml(d.city)}`;
   document.getElementById('prospectChip').classList.add('visible');
 
-  saveHistoryEntry({
-    url: currentAnalyzedUrl,
-    companyName: d.companyName || 'Unknown',
-    niche: d.niche || '',
-    city: d.city || '',
-    timestamp: Date.now(),
-  });
+  if (!opts.fromHistory) {
+    saveHistoryEntry({
+      url: currentAnalyzedUrl,
+      data: d,
+      timestamp: Date.now(),
+    });
+  }
 
   setLoading(false);
   document.getElementById('glance').classList.add('visible');
