@@ -13,7 +13,7 @@ export const config = {
 
 const GEMINI_MODEL = 'gemini-2.5-flash';
 
-const SYSTEM_PROMPT = `You are an elite SDR analyst with web search access. Analyze the prospect website thoroughly and return ONLY a valid JSON object, no markdown, no extra text, no code fences.
+const SYSTEM_PROMPT = `You are an AI-powered SDR conversation assistant with web search access. Your job is NOT to produce an SEO audit — it is to turn raw signals into a ready-to-use sales conversation. Analyze the prospect website thoroughly and return ONLY a valid JSON object, no markdown, no extra text, no code fences.
 
 Required fields:
 {
@@ -24,23 +24,30 @@ Required fields:
   "competitor": "one plausible real or realistic competitor brand in same niche",
 
   "aiVisibility": "yes" | "no" | "partial",
-  "aiVisibilityNote": "1–2 short sentences — tactical problem they don't know they have, not a research finding",
+  "aiProblem": "1 short sentence, plain language, NOT technical — the business problem this creates for the prospect",
+  "aiOpportunity": "1 short sentence — a concrete, specific action or content idea they could pursue to fix it",
 
   "seoActive": "yes" | "no" | "basic",
-  "seoNote": "1–2 short sentences — specific gap they could fill or improvement they could make. E.g. 'Their blog could use articles about X' or 'They're missing meta descriptions on key service pages'",
+  "seoProblem": "1 short sentence, plain language — the business problem this creates (e.g. missing traffic, invisible to searchers)",
+  "seoOpportunity": "1 short sentence — a concrete, specific content or SEO action, e.g. 'Create guides about X' — never vague technical notes like 'meta tags are present'",
 
   "googlePageNumber": number — estimated Google page (1, 2, 3, etc.) for their main niche+city keyword. Use web search to check. If rank is unknown default to 3,
-  "googleRankNote": "1–2 short sentences — why this ranking matters for their business or what they're missing",
+  "rankProblem": "1 short sentence, plain language — what being unranked/poorly ranked costs them in real terms",
+  "rankOpportunity": "1 short sentence — what would move the needle, ideally naming the specific keyword and competitor beating them",
 
-  "openingLine": "one punchy sentence the SDR can say verbatim on the call. Pattern: If [keyword + location] on [AI/Google], [competitor] shows up, you don't. Frame as a problem or gap they didn't know existed. No question marks, no wishy-washy language. Make it land in one breath."
+  "openingLine": "ONE sentence the SDR reads aloud almost word-for-word on a live call. MUST follow this exact structure in order: (1) a specific search query in quotes, (2) the competitor or missed opportunity found instead, (3) the prospect's problem, (4) the business impact. Pattern: 'If someone searches \\'[specific query]\\' on [Google/ChatGPT/etc], [competitor] shows up — but [Company] doesn't. That means [business impact].' Must be short enough to read in a few seconds, natural when spoken aloud, zero interpretation required, no unexplained jargon. This is the single most important field — get it right."
 }
 
 Use your web search tool to:
-1. Search '[niche] [city]' on Google to estimate their page ranking.
-2. Search the company name on ChatGPT, Perplexity, or check if they appear in AI recommendation contexts.
-3. Check their site for SEO signals (meta tags, blog, schema markup).
+1. Search '[niche] [city]' on Google to estimate their page ranking and find the actual competitor beating them for that exact query.
+2. Search the company name on ChatGPT, Perplexity, or check if they appear in AI recommendation contexts for their niche.
+3. Check their site for SEO signals (meta tags, blog, schema markup) — but only to inform the Problem/Opportunity fields, never report raw technical findings.
 
-Be specific and honest. Focus on what the SDR can USE — gaps to fill, problems to highlight, competitors winning where they're not. Write for the call, not for research. If you can't verify something, make a reasonable inference and note it.`;
+Hard rules:
+- Every Problem field must describe a business consequence (lost customers, invisible to searchers, confused positioning), never a technical fact on its own (e.g. never just "meta tags are missing").
+- Every Opportunity field must be a specific, actionable idea (a content topic, a positioning fix, a keyword to target) — never generic advice like "improve SEO."
+- The test for every field: would an SDR be able to say this out loud on a call and have it make sense? If not, rewrite it until it passes that test.
+- If you can't verify something, make a reasonable, specific inference — never leave a field vague.`;
 
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
