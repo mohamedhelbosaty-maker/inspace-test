@@ -1,14 +1,20 @@
 // api/analyze.js
-// Vercel Serverless Function — proxies the Anthropic API call server-side
+// Vercel Serverless Function — proxies the Groq API call server-side
 // so the real API key never touches the browser.
 //
 // Setup: in your Vercel project settings, add an Environment Variable
-//   ANTHROPIC_API_KEY = sk-ant-...
+//   GROQ_API_KEY = gsk_...
 // (Project Settings → Environment Variables → Production + Preview)
+// Get a free key (no credit card required) at https://console.groq.com
 
 export const config = {
   runtime: 'nodejs',
 };
+
+// groq/compound handles web search automatically, server-side, in a
+// single request — no manual tool-call loop needed.
+const GROQ_MODEL = 'groq/compound';
+const GROQ_ENDPOINT = 'https://api.groq.com/openai/v1/chat/completions';
 
 const SYSTEM_PROMPT = `You are an AI-powered SDR conversation assistant with web search access. Your job is NOT to produce an SEO audit — it is to turn raw signals into a ready-to-use sales conversation. Analyze the prospect website thoroughly and return ONLY a valid JSON object, no markdown, no extra text, no code fences.
 
@@ -35,16 +41,16 @@ Required fields:
   "openingLine": "ONE sentence the SDR reads aloud almost word-for-word on a live call. MUST follow this exact structure in order: (1) a specific search query in quotes, (2) the competitor or missed opportunity found instead, (3) the prospect's problem, (4) the business impact. Pattern: 'If someone searches \\'[specific query]\\' on [Google/ChatGPT/etc], [competitor] shows up — but [Company] doesn't. That means [business impact].' Must be short enough to read in a few seconds, natural when spoken aloud, zero interpretation required, no unexplained jargon. This is the single most important field — get it right."
 }
 
-Use your web search tool to:
+Use web search to:
 1. Search '[niche] [city]' on Google to estimate their page ranking and find the actual competitor beating them for that exact query.
 2. Search the company name to check if they appear in AI recommendation contexts for their niche.
 3. Check their site for SEO signals (meta tags, blog, schema markup) — but only to inform the Problem/Opportunity fields, never report raw technical findings.
 
 Hard rules:
-- Every Problem field must describe a business consequence (lost customers, invisible to searchers, confused positioning), never a technical fact on its own (e.g. never just "meta tags are missing").
-- Every Opportunity field must be a specific, actionable idea (a content topic, a positioning fix, a keyword to target) — never generic advice like "improve SEO."
+- Every Problem field must describe a business consequence (lost customers, invisible to searchers, confused positioning), never a technical fact on its own.
+- Every Opportunity field must be a specific, actionable idea, never generic advice like "improve SEO."
 - The test for every field: would an SDR be able to say this out loud on a call and have it make sense? If not, rewrite it until it passes that test.
-- After your searches, respond with ONLY the JSON object — no other text, no markdown fences.
+- Respond with ONLY the JSON object — no other text, no markdown fences, no commentary before or after.
 - If you can't verify something, make a reasonable, specific inference — never leave a field vague.`;
 
 export default async function handler(req, res) {
@@ -53,10 +59,10 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: 'Method not allowed. Use POST.' });
   }
 
-  const apiKey = process.env.ANTHROPIC_API_KEY;
+  const apiKey = process.env.GROQ_API_KEY;
   if (!apiKey) {
     return res.status(500).json({
-      error: 'Server misconfigured: ANTHROPIC_API_KEY is not set in the environment.',
+      error: 'Server misconfigured: GROQ_API_KEY is not set in the environment.',
     });
   }
 
@@ -73,19 +79,16 @@ export default async function handler(req, res) {
   }
 
   try {
-    const anthropicRes = await fetch('https://api.anthropic.com/v1/messages', {
+    const groqRes = await fetch(GROQ_ENDPOINT, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'x-api-key': apiKey,
-        'anthropic-version': '2023-06-01',
+        Authorization: `Bearer ${apiKey}`,
       },
       body: JSON.stringify({
-        model: 'claude-sonnet-4-6',
-        max_tokens: 1500,
-        system: SYSTEM_PROMPT,
-        tools: [{ type: 'web_search_20250305', name: 'web_search' }],
+        model: GROQ_MODEL,
         messages: [
+          { role: 'system', content: SYSTEM_PROMPT },
           {
             role: 'user',
             content: `Analyze this prospect website and check their AI visibility, SEO activity, and Google ranking: ${parsed.toString()}`,
@@ -94,23 +97,20 @@ export default async function handler(req, res) {
       }),
     });
 
-    const data = await anthropicRes.json();
+    const data = await groqRes.json();
 
-    if (!anthropicRes.ok) {
-      console.error('Anthropic API non-OK response:', JSON.stringify(data));
-      return res.status(anthropicRes.status).json({
-        error: data?.error?.message || 'Anthropic API request failed.',
+    if (!groqRes.ok) {
+      console.error('Groq API non-OK response:', JSON.stringify(data));
+      return res.status(groqRes.status).json({
+        error: data?.error?.message || 'Groq API request failed.',
       });
     }
 
-    const text = (data.content || [])
-      .map((block) => (block.type === 'text' ? block.text : ''))
-      .join('\n');
-
+    const text = data.choices?.[0]?.message?.content || '';
     const match = text.match(/\{[\s\S]*\}/);
     if (!match) {
       return res.status(502).json({
-        error: `Could not parse a JSON result from the model response (stop_reason: ${data.stop_reason || 'unknown'}).`,
+        error: `Could not parse a JSON result from the model response (finish_reason: ${data.choices?.[0]?.finish_reason || 'unknown'}).`,
       });
     }
 
@@ -123,7 +123,7 @@ export default async function handler(req, res) {
 
     return res.status(200).json(parsedResult);
   } catch (err) {
-    console.error('Anthropic API error:', err);
-    return res.status(500).json({ error: 'Unexpected server error calling Anthropic API.' });
+    console.error('Groq API error:', err);
+    return res.status(500).json({ error: 'Unexpected server error calling Groq API.' });
   }
 }
