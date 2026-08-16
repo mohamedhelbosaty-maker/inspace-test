@@ -110,8 +110,12 @@ export default async function handler(req, res) {
     const data = await geminiRes.json();
 
     if (!geminiRes.ok) {
+      console.error('Gemini API non-OK response:', JSON.stringify(data));
+      const detail = data?.error?.details
+        ? JSON.stringify(data.error.details)
+        : '';
       return res.status(geminiRes.status).json({
-        error: data?.error?.message || 'Gemini API request failed.',
+        error: `${data?.error?.message || 'Gemini API request failed.'}${detail ? ' | ' + detail : ''}`,
       });
     }
 
