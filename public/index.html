@@ -403,15 +403,18 @@ function renderHistory() {
     container.innerHTML = `<div class="history-empty">No prospects scanned yet — your history will show up here.</div>`;
     return;
   }
-  container.innerHTML = `<div class="history-list">${history.map((h, i) => `
+  container.innerHTML = `<div class="history-list">${history.map((h, i) => {
+    const d = h.data || h; // backward-compat with pre-cache history entries
+    return `
     <button class="history-item" onclick="loadFromHistory(${i})">
       <div class="history-item-main">
-        <div class="history-item-name">${escHtml(h.data.companyName)}</div>
-        <div class="history-item-sub">${escHtml(h.data.niche)} · ${escHtml(h.data.city)}</div>
+        <div class="history-item-name">${escHtml(d.companyName || h.url || 'Unknown')}</div>
+        <div class="history-item-sub">${escHtml(d.niche || '')} · ${escHtml(d.city || '')}</div>
       </div>
       <div class="history-item-time">${timeAgo(h.timestamp)}</div>
     </button>
-  `).join('')}</div>`;
+  `;
+  }).join('')}</div>`;
 }
 function loadFromHistory(index) {
   const history = loadHistory();
@@ -420,8 +423,13 @@ function loadFromHistory(index) {
   document.getElementById('urlInput').value = entry.url;
   currentAnalyzedUrl = entry.url;
   hideError();
-  applyAnalysis(entry.data, { fromHistory: true });
-  window.scrollTo({ top: 0, behavior: 'smooth' });
+  if (entry.data) {
+    applyAnalysis(entry.data, { fromHistory: true });
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  } else {
+    // Legacy entry saved before result-caching existed — no cached data, re-scan.
+    runAnalysis();
+  }
 }
 
 async function runAnalysis() {
