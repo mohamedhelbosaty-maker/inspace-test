@@ -16,10 +16,10 @@
   --houston:      #2E9E50;
   --moondust:     #F5F6F3;
   --white:        #FFFFFF;
-  --ink-58:       rgba(255,255,255,0.58);
-  --ink-42:       rgba(255,255,255,0.42);
-  --ink-10:       rgba(255,255,255,0.10);
-  --ink-05:       rgba(255,255,255,0.05);
+  --ink-58:       rgba(11,11,12,0.58);
+  --ink-42:       rgba(11,11,12,0.42);
+  --ink-10:       rgba(11,11,12,0.10);
+  --ink-05:       rgba(11,11,12,0.05);
   --purple-45:    rgba(133,17,217,0.45);
   --purple-15:    rgba(133,17,217,0.15);
   --green-45:     rgba(185,239,163,0.45);
@@ -30,11 +30,11 @@
   --font-body: 'Space Grotesk', 'Aeonik', 'Inter', 'Helvetica Neue', Arial, sans-serif;
   --font-mono: 'Space Mono', 'TT Commons Pro Mono', ui-monospace, 'SF Mono', monospace;
 }
-html { background: var(--ink); }
+html { background: var(--moondust); }
 body {
   font-family: var(--font-body);
-  background: var(--ink);
-  color: var(--white);
+  background: var(--moondust);
+  color: var(--ink);
   min-height: 100vh;
   padding: 2rem 1rem 4rem;
   display: flex;
@@ -51,16 +51,16 @@ body {
 }
 .brand-mark img { width: 20px; height: 20px; }
 .brand-name-wrap { display: flex; flex-direction: column; }
-.brand-wordmark { height: 16px; filter: brightness(0) invert(1); }
+.brand-wordmark { height: 16px; }
 .brand-sub  { font-family: var(--font-mono); font-size: 10.5px; letter-spacing: .05em; color: var(--ink-58); margin-top: 4px; text-transform: uppercase; }
 .badge {
   display: inline-flex; align-items: center; gap: 6px;
   font-family: var(--font-mono); font-size: 10.5px; font-weight: 700;
-  letter-spacing: .1em; text-transform: uppercase; color: var(--space-green);
+  letter-spacing: .1em; text-transform: uppercase; color: var(--houston);
   background: var(--ink-05); border: 1px solid var(--ink-10);
   padding: 6px 12px; border-radius: var(--r-pill);
 }
-.badge-dot { width: 5px; height: 5px; border-radius: 50%; background: var(--space-green); }
+.badge-dot { width: 5px; height: 5px; border-radius: 50%; background: var(--houston); }
 .url-panel {
   background: var(--ink-05); border: 1px solid var(--ink-10);
   border-radius: var(--r-12); padding: 1.25rem; margin-bottom: 1.5rem;
@@ -74,9 +74,9 @@ body {
 }
 .url-row { display: flex; gap: 8px; }
 .url-input {
-  flex: 1; background: var(--ink); border: 1px solid var(--ink-10);
+  flex: 1; background: var(--white); border: 1px solid var(--ink-10);
   border-radius: var(--r-12); padding: .7rem 1rem;
-  font-family: var(--font-mono); font-size: 13px; color: var(--white); outline: none;
+  font-family: var(--font-mono); font-size: 13px; color: var(--ink); outline: none;
   transition: border-color var(--ease), box-shadow var(--ease);
 }
 .url-input::placeholder { color: var(--ink-42); }
@@ -93,18 +93,18 @@ body {
 .analyze-btn:disabled { opacity: .38; cursor: not-allowed; transform: none; box-shadow: none; }
 .prospect-chip {
   display: none; align-items: center; gap: 10px;
-  background: var(--ink); border: 1px solid var(--ink-10);
+  background: var(--white); border: 1px solid var(--ink-10);
   border-radius: var(--r-12); padding: .6rem 1rem; margin-top: .85rem;
 }
 .prospect-chip.visible { display: flex; }
 .chip-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--houston); flex-shrink: 0; }
 .chip-label { font-size: 12.5px; color: var(--ink-58); flex: 1; }
-.chip-label strong { color: var(--white); font-weight: 700; }
+.chip-label strong { color: var(--ink); font-weight: 700; }
 .chip-reset { background: none; border: none; cursor: pointer; color: var(--ink-58); font-size: 16px; display: flex; align-items: center; transition: color var(--ease); font-family: var(--font-body); }
 .chip-reset:hover { color: var(--purple); }
 .error-msg {
   display: none; align-items: flex-start; gap: 9px; font-size: 13px;
-  color: var(--white); background: var(--purple-15);
+  color: var(--ink); background: var(--purple-15);
   border: 2px solid var(--purple); padding: .7rem 1rem;
   border-radius: var(--r-12); margin-top: .75rem; line-height: 1.5;
 }
@@ -117,7 +117,7 @@ body {
 .loading-panel.visible { display: flex; }
 .loading-ring {
   width: 38px; height: 38px; border-radius: 50%;
-  border: 2px solid var(--ink-10); border-top-color: var(--space-green);
+  border: 2px solid var(--ink-10); border-top-color: var(--purple);
   animation: spin .8s linear infinite;
 }
 @keyframes spin { to { transform: rotate(360deg); } }
@@ -125,7 +125,7 @@ body {
 .loading-steps { display: flex; flex-direction: column; gap: 7px; }
 .loading-step { display: flex; align-items: center; gap: 9px; font-family: var(--font-mono); font-size: 11.5px; color: var(--ink-42); transition: color .3s; }
 .loading-step.done   { color: var(--houston); }
-.loading-step.active { color: var(--space-green); }
+.loading-step.active { color: var(--houston); }
 .phase-card { display: none; }
 .phase-card.visible { display: block; animation: fadeUp .2s ease; }
 @keyframes fadeUp { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:translateY(0); } }
@@ -146,23 +146,23 @@ body {
 }
 .note {
   display: flex; gap: 11px; padding: .9rem 1rem;
-  background: var(--ink); border-radius: var(--r-12);
+  background: var(--white); border-radius: var(--r-12);
   border: 1px solid var(--ink-10); margin-bottom: .75rem;
 }
-.note-icon { width: 6px; height: 6px; border-radius: 50%; background: var(--space-green); flex-shrink: 0; margin-top: 7px; }
-.note-title { font-family: var(--font-mono); font-size: 10px; font-weight: 700; color: var(--white); letter-spacing: .08em; text-transform: uppercase; margin-bottom: 4px; }
+.note-icon { width: 6px; height: 6px; border-radius: 50%; background: var(--houston); flex-shrink: 0; margin-top: 7px; }
+.note-title { font-family: var(--font-mono); font-size: 10px; font-weight: 700; color: var(--ink); letter-spacing: .08em; text-transform: uppercase; margin-bottom: 4px; }
 .note-body  { font-size: 13px; color: var(--ink-58); line-height: 1.65; }
 .glance-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
 .glance-row {
   display: flex; align-items: flex-start; gap: 9px;
   font-size: 13px; color: var(--ink-58); line-height: 1.5;
-  background: var(--ink); border-radius: var(--r-12); padding: .65rem .8rem;
+  background: var(--white); border-radius: var(--r-12); padding: .65rem .8rem;
 }
 .glance-row .tick { width: 5px; height: 5px; border-radius: 50%; background: var(--houston); flex-shrink: 0; margin-top: 6px; }
-.filled { color: var(--white); font-weight: 700; }
+.filled { color: var(--ink); font-weight: 700; }
 .signals { display: grid; grid-template-columns: 1fr; gap: 8px; margin-bottom: .75rem; }
 .sig {
-  background: var(--ink); border: 1px solid var(--ink-10);
+  background: var(--white); border: 1px solid var(--ink-10);
   border-radius: var(--r-12); padding: .9rem .9rem;
   display: flex; flex-direction: column; gap: 5px;
   transition: border-color var(--ease);
@@ -179,7 +179,17 @@ body {
 }
 .sig-block-label.problem { color: var(--purple); }
 .sig-block-label.opportunity { color: var(--houston); }
-.sig-block-text { font-size: 11.5px; color: var(--white); line-height: 1.45; opacity: .85; }
+.sig-block-text { font-size: 12.5px; font-weight: 700; color: var(--ink); line-height: 1.35; }
+
+/* PAID VS ORGANIC */
+.pvo-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: .7rem; }
+.pvo-stat {
+  background: var(--white); border: 1px solid var(--ink-10);
+  border-radius: var(--r-12); padding: .7rem .8rem;
+}
+.pvo-stat-label { font-family: var(--font-mono); font-size: 9px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--ink-42); margin-bottom: 4px; }
+.pvo-stat-value { font-size: 14px; font-weight: 700; }
+.pvo-note { font-size: 12.5px; color: var(--ink-58); line-height: 1.55; }
 .status-good    { color: var(--houston); }
 .status-attn    { color: var(--purple); }
 .status-neutral { color: var(--ink-58); }
@@ -198,7 +208,7 @@ body {
   position: relative; margin-bottom: 1rem;
 }
 .opener-line {
-  font-size: 14px; font-weight: 700; color: var(--white);
+  font-size: 14px; font-weight: 700; color: var(--ink);
   line-height: 1.6; margin-bottom: .75rem; font-family: var(--font-body);
 }
 .copy-btn {
@@ -234,7 +244,7 @@ body {
 }
 .history-item:hover { border-color: var(--purple-45); background: var(--purple-15); }
 .history-item-main { flex: 1; min-width: 0; }
-.history-item-name { font-size: 12.5px; font-weight: 700; color: var(--white); }
+.history-item-name { font-size: 12.5px; font-weight: 700; color: var(--ink); }
 .history-item-sub { font-size: 11px; color: var(--ink-42); margin-top: 1px; }
 .history-item-time { font-family: var(--font-mono); font-size: 10px; color: var(--ink-42); flex-shrink: 0; white-space: nowrap; }
 </style>
@@ -315,6 +325,15 @@ body {
         <div class="sig"><div class="sig-label">SEO Activity</div><div class="skeleton" style="width:50%;margin-top:4px"></div><div class="skeleton" style="width:90%;margin-top:8px;height:11px"></div><div class="skeleton" style="width:85%;margin-top:6px;height:11px"></div></div>
         <div class="sig"><div class="sig-label">Google Rank</div><div class="skeleton" style="width:45%;margin-top:4px"></div><div class="skeleton" style="width:90%;margin-top:8px;height:11px"></div><div class="skeleton" style="width:85%;margin-top:6px;height:11px"></div></div>
       </div>
+    </div>
+
+    <div class="card">
+      <div class="card-label">Paid ads vs organic reach</div>
+      <div class="pvo-stats" id="pvoStats">
+        <div class="pvo-stat"><div class="pvo-stat-label">Paid Ads</div><div class="skeleton" style="width:60%"></div></div>
+        <div class="pvo-stat"><div class="pvo-stat-label">Organic Reach</div><div class="skeleton" style="width:60%"></div></div>
+      </div>
+      <div class="pvo-note" id="pvoNote">Loading…</div>
     </div>
 
     <div class="note">
@@ -530,6 +549,26 @@ function applyAnalysis(d, opts = {}) {
 
   document.getElementById('chipLabel').innerHTML = `Ready for <strong>${escHtml(d.companyName)}</strong> · ${escHtml(d.niche)} · ${escHtml(d.city)}`;
   document.getElementById('prospectChip').classList.add('visible');
+
+  const paidMap = {
+    yes:     { valCls: 'status-neutral', label: 'Active' },
+    no:      { valCls: 'status-attn',    label: 'Not Found' },
+    unclear: { valCls: 'status-neutral', label: 'Unclear' },
+  };
+  const paid = paidMap[d.paidAdsActive] || paidMap.unclear;
+
+  const organicMap = {
+    strong:   { valCls: 'status-good', label: 'Strong'   },
+    moderate: { valCls: 'status-neutral', label: 'Moderate' },
+    weak:     { valCls: 'status-attn', label: 'Weak'      },
+  };
+  const organic = organicMap[d.organicStrength] || organicMap.moderate;
+
+  document.getElementById('pvoStats').innerHTML = `
+    <div class="pvo-stat"><div class="pvo-stat-label">Paid Ads</div><div class="pvo-stat-value ${paid.valCls}">${paid.label}</div></div>
+    <div class="pvo-stat"><div class="pvo-stat-label">Organic Reach</div><div class="pvo-stat-value ${organic.valCls}">${organic.label}</div></div>
+  `;
+  document.getElementById('pvoNote').textContent = d.paidVsOrganicNote || '';
 
   if (!opts.fromHistory) {
     saveHistoryEntry({
