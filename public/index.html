@@ -501,8 +501,33 @@ function copyOpener() {
   });
 }
 
+function buildOpener(d) {
+  const niche = (d.niche && d.niche.toLowerCase() !== 'unknown') ? d.niche : 'what you do';
+  const city  = (d.city && d.city.toLowerCase() !== 'unknown') ? ` in ${d.city}` : '';
+  const pg    = parseInt(d.googlePageNumber) || 3;
+
+  const aiDefault = `I was searching for ${niche}${city} on AI platforms like ChatGPT, Gemini and Claude, and it was hard to find you.`;
+  const ai = {
+    no:      aiDefault,
+    partial: `I was searching for ${niche}${city} on AI platforms like ChatGPT, Gemini and Claude — you came up here and there, but not consistently.`,
+    yes:     `I was searching for ${niche}${city} on AI platforms like ChatGPT, Gemini and Claude, and you did come up — which is rarer than you'd think.`,
+  }[d.aiVisibility] || aiDefault;
+
+  const rank = pg === 1
+    ? `I found you through Google though, on page 1.`
+    : `I found you through Google though, on page ${pg}${pg >= 3 ? '+' : ''}.`;
+
+  const ask = {
+    yes:   `It looks like you're doing some SEO work, so I was wondering — is there someone helping you get recommended by AI as well?`,
+    basic: `Looks like there's some basic SEO in place, so I was wondering — is there someone helping you get recommended by AI as well?`,
+    no:    `I couldn't see much SEO activity either, so I was wondering — is anyone helping you get recommended by AI?`,
+  }[d.seoActive] || `I was wondering — is there someone helping you get recommended by AI?`;
+
+  return `${ai} ${rank} ${ask}`;
+}
+
 function applyAnalysis(d, opts = {}) {
-  document.getElementById('openerLine').textContent = escHtml(d.openingLine || 'Check their AI visibility and Google ranking above.');
+  document.getElementById('openerLine').textContent = buildOpener(d);
   document.getElementById('copyBtn').classList.remove('copied');
 
   document.getElementById('glanceGrid').innerHTML = `
