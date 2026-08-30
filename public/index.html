@@ -660,8 +660,10 @@ function copyOpener() {
 }
 
 function buildOpener(d) {
-  const niche = (d.niche && d.niche.toLowerCase() !== 'unknown') ? d.niche : 'what you do';
-  const city  = (d.city && d.city.toLowerCase() !== 'unknown') ? ` in ${d.city}` : '';
+  const vague = ['unknown', 'your area', 'n/a', ''];
+  const niche = (d.niche && !vague.includes(d.niche.trim().toLowerCase())) ? d.niche : 'what you do';
+  const cityRaw = (d.city || '').trim();
+  const city  = (cityRaw && !vague.includes(cityRaw.toLowerCase())) ? ` in ${cityRaw}` : '';
   const pg    = parseInt(d.googlePageNumber) || 3;
 
   const aiDefault = `I was searching for ${niche}${city} on AI platforms like ChatGPT, Gemini and Claude, and it was hard to find you.`;
