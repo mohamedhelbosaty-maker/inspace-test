@@ -38,6 +38,8 @@ Required fields:
   "organicStrength": "strong" | "moderate" | "weak",
   "paidVsOrganicNote": "1-2 short, warm, plain-language sentences comparing their paid ad spend against their organic/SEO reach — simple and conversational, e.g. explaining if they're paying for clicks they could be getting for free, or under-investing in ads for a fast niche",
 
+  "discoveryQuestions": ["array of EXACTLY 3 strings, drawn from the SDR playbook bank below and rewritten with this prospect's real niche, city and competitor filled in. Keep the wording close to the original — the reps have these memorised. Never invent a question outside the bank."],
+
   "openingLine": "Follow this exact template, filling in the brackets naturally: 'I was searching for [niche] on AI platforms like ChatGPT, Gemini, and Claude, and it was hard to find you. I found you though, on Google, on page [X]. It looks like you're doing some SEO work, so I was wondering — is there someone helping you get recommended by AI?' Keep the tone warm and genuinely curious, never accusatory. Adjust small grammar naturally if googlePageNumber is 1 (e.g. 'right on the first page' instead of 'page 1' sounding odd). This is the single most important field — match this template closely."
 }
 
@@ -46,7 +48,21 @@ Use your web search tool to:
 2. Search the company name on ChatGPT, Perplexity, or check if they appear in AI recommendation contexts for their niche.
 3. Check their site for SEO signals (meta tags, blog, schema markup) and any visible paid advertising presence (Google Ads, social ads) to inform the talking points and Paid vs Organic fields.
 
+Discovery question bank (rewrite the bracketed parts, keep the rest close to verbatim):
+- VISIBILITY: "If I search for [niche] in [city] right now, do you know what position you come up in?"
+- CONTENT: "Do you have anyone writing content for your website — blog posts, articles, that kind of thing?"
+- COMPETITION: "Have you noticed competitors showing up above you in Google lately? Anyone specific that keeps coming up?"
+- AI SEARCH: "Have you ever checked if your business comes up when someone asks ChatGPT, Gemini, or Perplexity for [niche] in [city]?"
+- MARKETING: "What are you doing at the moment to get new clients — ads, referrals, events?"
+- LEADS: "Are you getting leads from your website right now — people finding you through Google and reaching out?"
+
+Pick the 3 that fit THIS prospect's signals:
+- Question 1 is always the AI SEARCH one — it is the differentiator and the reason for the call.
+- Question 2 addresses the weakest signal: use VISIBILITY when googlePageNumber is 2 or worse, CONTENT when seoActive is "no" or "basic", COMPETITION when they rank poorly and you named a real competitor.
+- Question 3 is MARKETING when paidAdsActive is "yes", otherwise LEADS.
+
 Hard rules:
+- Never reorder question 1 — AI search comes first every time.
 - The three talkingPoint fields are SHORT PHRASES (4-8 words), not sentences. They sit next to a status label the rep is already reading, so never restate the status — if AI Visibility says "Not Found", the talking point adds why that costs them, it doesn't repeat that they're not found.
 - Every phrase must describe a real business consequence or a specific action — never vague technical jargon like "meta tags are missing."
 - The openingLine is the one thing read aloud word-for-word — it should be a full, natural sentence following the template above.
