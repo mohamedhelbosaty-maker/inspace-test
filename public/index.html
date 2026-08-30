@@ -16,10 +16,10 @@
   --houston:      #2E9E50;
   --moondust:     #F5F6F3;
   --white:        #FFFFFF;
-  --ink-58:       rgba(255,255,255,0.58);
-  --ink-42:       rgba(255,255,255,0.42);
-  --ink-10:       rgba(255,255,255,0.10);
-  --ink-05:       rgba(255,255,255,0.05);
+  --ink-58:       rgba(11,11,12,0.58);
+  --ink-42:       rgba(11,11,12,0.42);
+  --ink-10:       rgba(11,11,12,0.10);
+  --ink-05:       rgba(11,11,12,0.05);
   --purple-45:    rgba(133,17,217,0.45);
   --purple-15:    rgba(133,17,217,0.15);
   --green-45:     rgba(185,239,163,0.45);
@@ -30,17 +30,17 @@
   --font-body: 'Space Grotesk', 'Aeonik', 'Inter', 'Helvetica Neue', Arial, sans-serif;
   --font-mono: 'Space Mono', 'TT Commons Pro Mono', ui-monospace, 'SF Mono', monospace;
 }
-html { background: var(--ink); }
+html { background: var(--moondust); }
 body {
   font-family: var(--font-body);
-  background: var(--ink);
-  color: var(--white);
+  background: var(--moondust);
+  color: var(--ink);
   min-height: 100vh;
-  padding: 2rem 1rem 4rem;
+  padding: 2rem 2.5rem 3rem;
   display: flex;
   justify-content: center;
 }
-.wrap { width: 100%; max-width: 640px; }
+.wrap { width: 100%; max-width: 1360px; }
 .header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 2rem; }
 .brand { display: flex; align-items: center; gap: 12px; }
 .brand-mark {
@@ -51,16 +51,16 @@ body {
 }
 .brand-mark img { width: 20px; height: 20px; }
 .brand-name-wrap { display: flex; flex-direction: column; }
-.brand-wordmark { height: 16px; filter: brightness(0) invert(1); }
+.brand-wordmark { height: 16px; }
 .brand-sub  { font-family: var(--font-mono); font-size: 10.5px; letter-spacing: .05em; color: var(--ink-58); margin-top: 4px; text-transform: uppercase; }
 .badge {
   display: inline-flex; align-items: center; gap: 6px;
   font-family: var(--font-mono); font-size: 10.5px; font-weight: 700;
-  letter-spacing: .1em; text-transform: uppercase; color: var(--space-green);
+  letter-spacing: .1em; text-transform: uppercase; color: var(--houston);
   background: var(--ink-05); border: 1px solid var(--ink-10);
   padding: 6px 12px; border-radius: var(--r-pill);
 }
-.badge-dot { width: 5px; height: 5px; border-radius: 50%; background: var(--space-green); }
+.badge-dot { width: 5px; height: 5px; border-radius: 50%; background: var(--houston); }
 .url-panel {
   background: var(--ink-05); border: 1px solid var(--ink-10);
   border-radius: var(--r-12); padding: 1.25rem; margin-bottom: 1.5rem;
@@ -74,9 +74,9 @@ body {
 }
 .url-row { display: flex; gap: 8px; }
 .url-input {
-  flex: 1; background: var(--ink); border: 1px solid var(--ink-10);
+  flex: 1; background: var(--white); border: 1px solid var(--ink-10);
   border-radius: var(--r-12); padding: .7rem 1rem;
-  font-family: var(--font-mono); font-size: 13px; color: var(--white); outline: none;
+  font-family: var(--font-mono); font-size: 13px; color: var(--ink); outline: none;
   transition: border-color var(--ease), box-shadow var(--ease);
 }
 .url-input::placeholder { color: var(--ink-42); }
@@ -93,18 +93,18 @@ body {
 .analyze-btn:disabled { opacity: .38; cursor: not-allowed; transform: none; box-shadow: none; }
 .prospect-chip {
   display: none; align-items: center; gap: 10px;
-  background: var(--ink); border: 1px solid var(--ink-10);
+  background: var(--white); border: 1px solid var(--ink-10);
   border-radius: var(--r-12); padding: .6rem 1rem; margin-top: .85rem;
 }
 .prospect-chip.visible { display: flex; }
 .chip-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--houston); flex-shrink: 0; }
 .chip-label { font-size: 12.5px; color: var(--ink-58); flex: 1; }
-.chip-label strong { color: var(--white); font-weight: 700; }
+.chip-label strong { color: var(--ink); font-weight: 700; }
 .chip-reset { background: none; border: none; cursor: pointer; color: var(--ink-58); font-size: 16px; display: flex; align-items: center; transition: color var(--ease); font-family: var(--font-body); }
 .chip-reset:hover { color: var(--purple); }
 .error-msg {
   display: none; align-items: flex-start; gap: 9px; font-size: 13px;
-  color: var(--white); background: var(--purple-15);
+  color: var(--ink); background: var(--purple-15);
   border: 2px solid var(--purple); padding: .7rem 1rem;
   border-radius: var(--r-12); margin-top: .75rem; line-height: 1.5;
 }
@@ -117,7 +117,7 @@ body {
 .loading-panel.visible { display: flex; }
 .loading-ring {
   width: 38px; height: 38px; border-radius: 50%;
-  border: 2px solid var(--ink-10); border-top-color: var(--space-green);
+  border: 2px solid var(--ink-10); border-top-color: var(--purple);
   animation: spin .8s linear infinite;
 }
 @keyframes spin { to { transform: rotate(360deg); } }
@@ -125,7 +125,7 @@ body {
 .loading-steps { display: flex; flex-direction: column; gap: 7px; }
 .loading-step { display: flex; align-items: center; gap: 9px; font-family: var(--font-mono); font-size: 11.5px; color: var(--ink-42); transition: color .3s; }
 .loading-step.done   { color: var(--houston); }
-.loading-step.active { color: var(--space-green); }
+.loading-step.active { color: var(--houston); }
 .phase-card { display: none; }
 .phase-card.visible { display: block; animation: fadeUp .2s ease; }
 @keyframes fadeUp { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:translateY(0); } }
@@ -133,6 +133,12 @@ body {
 .phase-num { font-family: var(--font-mono); font-size: 11px; font-weight: 700; color: var(--purple); letter-spacing: .12em; }
 .phase-rule { flex: 1; height: 1px; background: var(--ink-10); }
 .phase-h { font-size: 22px; font-weight: 700; letter-spacing: -.01em; margin-bottom: 1.25rem; }
+.glance-columns { display: flex; gap: 18px; align-items: flex-start; flex-wrap: wrap; }
+.glance-col { flex: 1 1 320px; display: flex; flex-direction: column; gap: .75rem; min-width: 0; }
+.glance-col > .card, .glance-col > .note { margin-bottom: 0; }
+@media (max-width: 980px) {
+  .glance-col { flex: 1 1 100%; }
+}
 .card {
   background: var(--ink-05); border: 1px solid var(--ink-10);
   border-radius: var(--r-12); padding: 1rem 1.2rem; margin-bottom: .75rem;
@@ -146,23 +152,23 @@ body {
 }
 .note {
   display: flex; gap: 11px; padding: .9rem 1rem;
-  background: var(--ink); border-radius: var(--r-12);
+  background: var(--white); border-radius: var(--r-12);
   border: 1px solid var(--ink-10); margin-bottom: .75rem;
 }
-.note-icon { width: 6px; height: 6px; border-radius: 50%; background: var(--space-green); flex-shrink: 0; margin-top: 7px; }
-.note-title { font-family: var(--font-mono); font-size: 10px; font-weight: 700; color: var(--white); letter-spacing: .08em; text-transform: uppercase; margin-bottom: 4px; }
+.note-icon { width: 6px; height: 6px; border-radius: 50%; background: var(--houston); flex-shrink: 0; margin-top: 7px; }
+.note-title { font-family: var(--font-mono); font-size: 10px; font-weight: 700; color: var(--ink); letter-spacing: .08em; text-transform: uppercase; margin-bottom: 4px; }
 .note-body  { font-size: 13px; color: var(--ink-58); line-height: 1.65; }
 .glance-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
 .glance-row {
   display: flex; align-items: flex-start; gap: 9px;
   font-size: 13px; color: var(--ink-58); line-height: 1.5;
-  background: var(--ink); border-radius: var(--r-12); padding: .65rem .8rem;
+  background: var(--white); border-radius: var(--r-12); padding: .65rem .8rem;
 }
 .glance-row .tick { width: 5px; height: 5px; border-radius: 50%; background: var(--houston); flex-shrink: 0; margin-top: 6px; }
-.filled { color: var(--white); font-weight: 700; }
+.filled { color: var(--ink); font-weight: 700; }
 .signals { display: grid; grid-template-columns: 1fr; gap: 8px; margin-bottom: .75rem; }
 .sig {
-  background: var(--ink); border: 1px solid var(--ink-10);
+  background: var(--white); border: 1px solid var(--ink-10);
   border-radius: var(--r-12); padding: .9rem .9rem;
   display: flex; flex-direction: column; gap: 5px;
   transition: border-color var(--ease);
@@ -173,18 +179,16 @@ body {
   text-transform: uppercase; color: var(--ink-42);
 }
 .sig-value { font-size: 14px; font-weight: 700; line-height: 1.3; }
-.sig-block-label {
-  font-family: var(--font-mono); font-size: 9px; font-weight: 700;
-  letter-spacing: .06em; text-transform: uppercase; margin-top: 2px;
+.sig-talk {
+  display: flex; align-items: flex-start; gap: 7px; margin-top: 4px;
 }
-.sig-block-label.problem { color: var(--purple); }
-.sig-block-label.opportunity { color: var(--houston); }
-.sig-block-text { font-size: 12.5px; font-weight: 700; color: var(--white); line-height: 1.35; }
+.sig-talk-arrow { font-family: var(--font-mono); font-size: 12px; font-weight: 700; color: var(--purple); line-height: 1.35; flex-shrink: 0; }
+.sig-talk-text { font-size: 13.5px; font-weight: 700; color: var(--ink); line-height: 1.35; }
 
 /* PAID VS ORGANIC */
 .pvo-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: .7rem; }
 .pvo-stat {
-  background: var(--ink); border: 1px solid var(--ink-10);
+  background: var(--white); border: 1px solid var(--ink-10);
   border-radius: var(--r-12); padding: .7rem .8rem;
 }
 .pvo-stat-label { font-family: var(--font-mono); font-size: 9px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--ink-42); margin-bottom: 4px; }
@@ -204,24 +208,24 @@ body {
 }
 @keyframes shimmer { to { background-position: -200% 0; } }
 .opener-card {
-  background: var(--purple-15); border: 2px solid var(--purple);
+  background: var(--green-15); border: 2px solid var(--space-green);
   position: relative; margin-bottom: 1rem;
 }
 .opener-line {
-  font-size: 14px; font-weight: 700; color: var(--white);
+  font-size: 14px; font-weight: 700; color: var(--ink);
   line-height: 1.6; margin-bottom: .75rem; font-family: var(--font-body);
 }
 .copy-btn {
   display: inline-flex; align-items: center; gap: 5px;
-  padding: .5rem .9rem; background: var(--purple); color: var(--white);
+  padding: .5rem .9rem; background: var(--houston); color: var(--white);
   font-family: var(--font-mono); font-size: 12px; font-weight: 700;
   border: none; border-radius: var(--r-pill); cursor: pointer;
   transition: box-shadow var(--ease), transform .08s; letter-spacing: .05em;
   text-transform: uppercase;
 }
-.copy-btn:hover { box-shadow: 0 4px 18px rgba(133,17,217,.3); }
+.copy-btn:hover { box-shadow: 0 4px 18px rgba(46,158,80,.3); }
 .copy-btn:active { transform: scale(.96); }
-.copy-btn.copied { background: var(--houston); pointer-events: none; }
+.copy-btn.copied { background: var(--purple); pointer-events: none; }
 .copy-btn.copied::after { content: ' ✓'; }
 .history-section { margin-top: 1.75rem; }
 .history-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: .75rem; }
@@ -244,21 +248,21 @@ body {
 }
 .history-item:hover { border-color: var(--purple-45); background: var(--purple-15); }
 .history-item-main { flex: 1; min-width: 0; }
-.history-item-name { font-size: 12.5px; font-weight: 700; color: var(--white); }
+.history-item-name { font-size: 12.5px; font-weight: 700; color: var(--ink); }
 .history-item-sub { font-size: 11px; color: var(--ink-42); margin-top: 1px; }
 .history-item-time { font-family: var(--font-mono); font-size: 10px; color: var(--ink-42); flex-shrink: 0; white-space: nowrap; }
 
 /* AUTH GATE */
 .auth-gate {
   position: fixed; inset: 0; z-index: 9999;
-  background: var(--ink);
+  background: var(--moondust);
   display: flex; align-items: center; justify-content: center;
   padding: 1.5rem;
 }
 .auth-gate.hidden { display: none; }
 .auth-card {
   width: 100%; max-width: 380px; text-align: center;
-  background: var(--ink-05); border: 1px solid var(--ink-10);
+  background: var(--white); border: 1px solid var(--ink-10);
   border-radius: var(--r-12); padding: 2.25rem 1.75rem;
   display: flex; flex-direction: column; align-items: center; gap: 1rem;
 }
@@ -268,11 +272,11 @@ body {
   display: flex; align-items: center; justify-content: center;
 }
 .auth-mark img { width: 24px; height: 24px; }
-.auth-title { font-size: 19px; font-weight: 700; letter-spacing: -.01em; }
+.auth-title { font-size: 19px; font-weight: 700; letter-spacing: -.01em; color: var(--ink); }
 .auth-sub { font-size: 13px; color: var(--ink-58); line-height: 1.6; margin-top: -.5rem; }
 .auth-msg {
   display: none; font-size: 12.5px; line-height: 1.55; text-align: left;
-  color: var(--white); background: var(--purple-15);
+  color: var(--ink); background: var(--purple-15);
   border: 1px solid var(--purple); border-radius: var(--r-12);
   padding: .65rem .85rem; width: 100%;
 }
@@ -357,53 +361,61 @@ body {
     <div class="phase-eyebrow"><span class="phase-num">00 · READ</span><div class="phase-rule"></div></div>
     <div class="phase-h">Live glance — 5-second read</div>
 
-    <div class="card opener-card">
-      <div class="card-label">Your opener</div>
-      <div class="opener-line" id="openerLine">Loading…</div>
-      <button class="copy-btn" id="copyBtn" onclick="copyOpener()" title="Copy to clipboard">Copy</button>
-    </div>
+    <div class="glance-columns">
+      <div class="glance-col">
+        <div class="card opener-card">
+          <div class="card-label">Your opener</div>
+          <div class="opener-line" id="openerLine">Loading…</div>
+          <button class="copy-btn" id="copyBtn" onclick="copyOpener()" title="Copy to clipboard">Copy</button>
+        </div>
 
-    <div class="note">
-      <div class="note-icon"></div>
-      <div>
-        <div class="note-title">Auto-dialer protocol</div>
-        <div class="note-body">The second the line connects, open their site. Pull one real signal in 5 seconds — that signal becomes your opener. Never stall, never apologise.</div>
+        <div class="note">
+          <div class="note-icon"></div>
+          <div>
+            <div class="note-title">Auto-dialer protocol</div>
+            <div class="note-body">The second the line connects, open their site. Pull one real signal in 5 seconds — that signal becomes your opener. Never stall, never apologise.</div>
+          </div>
+        </div>
       </div>
-    </div>
 
-    <div class="card">
-      <div class="card-label">Site signals</div>
-      <div class="glance-grid" id="glanceGrid">
-        <div class="glance-row"><span class="tick"></span><span>Service or product? (no shop = service)</span></div>
-        <div class="glance-row"><span class="tick"></span><span>Their niche in 2–3 words</span></div>
-        <div class="glance-row"><span class="tick"></span><span>City or region in footer or header</span></div>
-        <div class="glance-row"><span class="tick"></span><span>A competitor brand to name-drop</span></div>
+      <div class="glance-col">
+        <div class="card">
+          <div class="card-label">Site signals</div>
+          <div class="glance-grid" id="glanceGrid">
+            <div class="glance-row"><span class="tick"></span><span>Service or product? (no shop = service)</span></div>
+            <div class="glance-row"><span class="tick"></span><span>Their niche in 2–3 words</span></div>
+            <div class="glance-row"><span class="tick"></span><span>City or region in footer or header</span></div>
+            <div class="glance-row"><span class="tick"></span><span>A competitor brand to name-drop</span></div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-label">Deep signals</div>
+          <div class="signals" id="signalsGrid">
+            <div class="sig"><div class="sig-label">AI Visibility</div><div class="skeleton" style="width:60%;margin-top:4px"></div><div class="skeleton" style="width:88%;margin-top:9px;height:12px"></div></div>
+            <div class="sig"><div class="sig-label">SEO Activity</div><div class="skeleton" style="width:50%;margin-top:4px"></div><div class="skeleton" style="width:88%;margin-top:9px;height:12px"></div></div>
+            <div class="sig"><div class="sig-label">Google Rank</div><div class="skeleton" style="width:45%;margin-top:4px"></div><div class="skeleton" style="width:88%;margin-top:9px;height:12px"></div></div>
+          </div>
+        </div>
       </div>
-    </div>
 
-    <div class="card">
-      <div class="card-label">Deep signals</div>
-      <div class="signals" id="signalsGrid">
-        <div class="sig"><div class="sig-label">AI Visibility</div><div class="skeleton" style="width:60%;margin-top:4px"></div><div class="skeleton" style="width:90%;margin-top:8px;height:11px"></div><div class="skeleton" style="width:85%;margin-top:6px;height:11px"></div></div>
-        <div class="sig"><div class="sig-label">SEO Activity</div><div class="skeleton" style="width:50%;margin-top:4px"></div><div class="skeleton" style="width:90%;margin-top:8px;height:11px"></div><div class="skeleton" style="width:85%;margin-top:6px;height:11px"></div></div>
-        <div class="sig"><div class="sig-label">Google Rank</div><div class="skeleton" style="width:45%;margin-top:4px"></div><div class="skeleton" style="width:90%;margin-top:8px;height:11px"></div><div class="skeleton" style="width:85%;margin-top:6px;height:11px"></div></div>
-      </div>
-    </div>
+      <div class="glance-col">
+        <div class="card">
+          <div class="card-label">Paid ads vs organic reach</div>
+          <div class="pvo-stats" id="pvoStats">
+            <div class="pvo-stat"><div class="pvo-stat-label">Paid Ads</div><div class="skeleton" style="width:60%"></div></div>
+            <div class="pvo-stat"><div class="pvo-stat-label">Organic Reach</div><div class="skeleton" style="width:60%"></div></div>
+          </div>
+          <div class="pvo-note" id="pvoNote">Loading…</div>
+        </div>
 
-    <div class="card">
-      <div class="card-label">Paid ads vs organic reach</div>
-      <div class="pvo-stats" id="pvoStats">
-        <div class="pvo-stat"><div class="pvo-stat-label">Paid Ads</div><div class="skeleton" style="width:60%"></div></div>
-        <div class="pvo-stat"><div class="pvo-stat-label">Organic Reach</div><div class="skeleton" style="width:60%"></div></div>
-      </div>
-      <div class="pvo-note" id="pvoNote">Loading…</div>
-    </div>
-
-    <div class="note">
-      <div class="note-icon"></div>
-      <div>
-        <div class="note-title">Site loads too slow?</div>
-        <div class="note-body">Default to company name alone. "I just looked up [Company] on ChatGPT…" still lands.</div>
+        <div class="note">
+          <div class="note-icon"></div>
+          <div>
+            <div class="note-title">Site loads too slow?</div>
+            <div class="note-body">Default to company name alone. "I just looked up [Company] on ChatGPT…" still lands.</div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -418,7 +430,7 @@ body {
 
 </div>
 <script>
-// ── AUTH ──────────────────────────────────────────────────────────
+// -- AUTH -----------------------------------------------------------
 // This client ID is public by design (it identifies the app, it is not
 // a secret). It MUST match the GOOGLE_CLIENT_ID env var on Vercel.
 const GOOGLE_CLIENT_ID = '783001273826-g3mcsdv8dpm251krt2eecc57hbdqnuff.apps.googleusercontent.com';
@@ -432,7 +444,7 @@ function decodeJwt(t) {
   } catch { return null; }
 }
 
-// Client-side checks are for UX only — api/_auth.js is what actually
+// Client-side checks are for UX only -- api/_auth.js is what actually
 // enforces this. Never trust a claim read in the browser.
 function tokenUsable(t) {
   const p = decodeJwt(t);
@@ -489,7 +501,7 @@ function onGisLoad() {
     cancel_on_tap_outside: false,
   });
   google.accounts.id.renderButton(document.getElementById('gsiButton'), {
-    theme: 'filled_black', size: 'large', shape: 'pill', text: 'signin_with',
+    theme: 'outline', size: 'large', shape: 'pill', text: 'signin_with',
   });
 
   let saved = null;
@@ -501,7 +513,7 @@ function onGisLoad() {
     google.accounts.id.prompt();
   }
 }
-// ──────────────────────────────────────────────────────────────────
+// -------------------------------------------------------------------
 
 let loadTimer = null, loadStep = 0;
 let currentAnalyzedUrl = '';
@@ -647,8 +659,33 @@ function copyOpener() {
   });
 }
 
+function buildOpener(d) {
+  const niche = (d.niche && d.niche.toLowerCase() !== 'unknown') ? d.niche : 'what you do';
+  const city  = (d.city && d.city.toLowerCase() !== 'unknown') ? ` in ${d.city}` : '';
+  const pg    = parseInt(d.googlePageNumber) || 3;
+
+  const aiDefault = `I was searching for ${niche}${city} on AI platforms like ChatGPT, Gemini and Claude, and it was hard to find you.`;
+  const ai = {
+    no:      aiDefault,
+    partial: `I was searching for ${niche}${city} on AI platforms like ChatGPT, Gemini and Claude — you came up here and there, but not consistently.`,
+    yes:     `I was searching for ${niche}${city} on AI platforms like ChatGPT, Gemini and Claude, and you did come up — which is rarer than you'd think.`,
+  }[d.aiVisibility] || aiDefault;
+
+  const rank = pg === 1
+    ? `I found you through Google though, on page 1.`
+    : `I found you through Google though, on page ${pg}${pg >= 3 ? '+' : ''}.`;
+
+  const ask = {
+    yes:   `It looks like you're doing some SEO work, so I was wondering — is there someone helping you get recommended by AI as well?`,
+    basic: `Looks like there's some basic SEO in place, so I was wondering — is there someone helping you get recommended by AI as well?`,
+    no:    `I couldn't see much SEO activity either, so I was wondering — is anyone helping you get recommended by AI?`,
+  }[d.seoActive] || `I was wondering — is there someone helping you get recommended by AI?`;
+
+  return `${ai} ${rank} ${ask}`;
+}
+
 function applyAnalysis(d, opts = {}) {
-  document.getElementById('openerLine').textContent = escHtml(d.openingLine || 'Check their AI visibility and Google ranking above.');
+  document.getElementById('openerLine').textContent = buildOpener(d);
   document.getElementById('copyBtn').classList.remove('copied');
 
   document.getElementById('glanceGrid').innerHTML = `
@@ -682,26 +719,17 @@ function applyAnalysis(d, opts = {}) {
     <div class="sig ${ai.cls}">
       <div class="sig-label">AI Visibility</div>
       <div class="sig-value ${ai.valCls}">${ai.label}</div>
-      <div class="sig-block-label problem">Problem</div>
-      <div class="sig-block-text">${escHtml(d.aiProblem || '')}</div>
-      <div class="sig-block-label opportunity">Opportunity</div>
-      <div class="sig-block-text">${escHtml(d.aiOpportunity || '')}</div>
+      <div class="sig-talk"><span class="sig-talk-arrow">→</span><span class="sig-talk-text">${escHtml(d.aiTalkingPoint || '')}</span></div>
     </div>
     <div class="sig ${seo.cls}">
       <div class="sig-label">SEO Activity</div>
       <div class="sig-value ${seo.valCls}">${seo.label}</div>
-      <div class="sig-block-label problem">Problem</div>
-      <div class="sig-block-text">${escHtml(d.seoProblem || '')}</div>
-      <div class="sig-block-label opportunity">Opportunity</div>
-      <div class="sig-block-text">${escHtml(d.seoOpportunity || '')}</div>
+      <div class="sig-talk"><span class="sig-talk-arrow">→</span><span class="sig-talk-text">${escHtml(d.seoTalkingPoint || '')}</span></div>
     </div>
     <div class="sig ${rankCls}">
       <div class="sig-label">Google Rank</div>
       <div class="sig-value ${rankValCls}">${rankLabel}</div>
-      <div class="sig-block-label problem">Problem</div>
-      <div class="sig-block-text">${escHtml(d.rankProblem || '')}</div>
-      <div class="sig-block-label opportunity">Opportunity</div>
-      <div class="sig-block-text">${escHtml(d.rankOpportunity || '')}</div>
+      <div class="sig-talk"><span class="sig-talk-arrow">→</span><span class="sig-talk-text">${escHtml(d.rankTalkingPoint || '')}</span></div>
     </div>
   `;
 
@@ -753,9 +781,9 @@ function reset() {
     <div class="glance-row"><span class="tick"></span><span>A competitor brand to name-drop</span></div>
   `;
   document.getElementById('signalsGrid').innerHTML = `
-    <div class="sig"><div class="sig-label">AI Visibility</div><div class="skeleton" style="width:60%;margin-top:4px"></div><div class="skeleton" style="width:90%;margin-top:8px;height:11px"></div><div class="skeleton" style="width:85%;margin-top:6px;height:11px"></div></div>
-    <div class="sig"><div class="sig-label">SEO Activity</div><div class="skeleton" style="width:50%;margin-top:4px"></div><div class="skeleton" style="width:90%;margin-top:8px;height:11px"></div><div class="skeleton" style="width:85%;margin-top:6px;height:11px"></div></div>
-    <div class="sig"><div class="sig-label">Google Rank</div><div class="skeleton" style="width:45%;margin-top:4px"></div><div class="skeleton" style="width:90%;margin-top:8px;height:11px"></div><div class="skeleton" style="width:85%;margin-top:6px;height:11px"></div></div>
+    <div class="sig"><div class="sig-label">AI Visibility</div><div class="skeleton" style="width:60%;margin-top:4px"></div><div class="skeleton" style="width:88%;margin-top:9px;height:12px"></div></div>
+    <div class="sig"><div class="sig-label">SEO Activity</div><div class="skeleton" style="width:50%;margin-top:4px"></div><div class="skeleton" style="width:88%;margin-top:9px;height:12px"></div></div>
+    <div class="sig"><div class="sig-label">Google Rank</div><div class="skeleton" style="width:45%;margin-top:4px"></div><div class="skeleton" style="width:88%;margin-top:9px;height:12px"></div></div>
   `;
   hideError();
 }
