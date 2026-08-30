@@ -213,20 +213,8 @@ body {
 }
 .opener-line {
   font-size: 14px; font-weight: 700; color: var(--ink);
-  line-height: 1.6; margin-bottom: .75rem; font-family: var(--font-body);
+  line-height: 1.6; font-family: var(--font-body);
 }
-.copy-btn {
-  display: inline-flex; align-items: center; gap: 5px;
-  padding: .5rem .9rem; background: var(--houston); color: var(--white);
-  font-family: var(--font-mono); font-size: 12px; font-weight: 700;
-  border: none; border-radius: var(--r-pill); cursor: pointer;
-  transition: box-shadow var(--ease), transform .08s; letter-spacing: .05em;
-  text-transform: uppercase;
-}
-.copy-btn:hover { box-shadow: 0 4px 18px rgba(46,158,80,.3); }
-.copy-btn:active { transform: scale(.96); }
-.copy-btn.copied { background: var(--purple); pointer-events: none; }
-.copy-btn.copied::after { content: ' ✓'; }
 .history-section { margin-top: 1.75rem; }
 .history-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: .75rem; }
 .history-title { font-family: var(--font-mono); font-size: 10.5px; font-weight: 700; color: var(--ink-58); letter-spacing: .1em; text-transform: uppercase; }
@@ -366,15 +354,6 @@ body {
         <div class="card opener-card">
           <div class="card-label">Your opener</div>
           <div class="opener-line" id="openerLine">Loading…</div>
-          <button class="copy-btn" id="copyBtn" onclick="copyOpener()" title="Copy to clipboard">Copy</button>
-        </div>
-
-        <div class="note">
-          <div class="note-icon"></div>
-          <div>
-            <div class="note-title">Auto-dialer protocol</div>
-            <div class="note-body">The second the line connects, open their site. Pull one real signal in 5 seconds — that signal becomes your opener. Never stall, never apologise.</div>
-          </div>
         </div>
       </div>
 
@@ -407,14 +386,6 @@ body {
             <div class="pvo-stat"><div class="pvo-stat-label">Organic Reach</div><div class="skeleton" style="width:60%"></div></div>
           </div>
           <div class="pvo-note" id="pvoNote">Loading…</div>
-        </div>
-
-        <div class="note">
-          <div class="note-icon"></div>
-          <div>
-            <div class="note-title">Site loads too slow?</div>
-            <div class="note-body">Default to company name alone. "I just looked up [Company] on ChatGPT…" still lands.</div>
-          </div>
         </div>
       </div>
     </div>
@@ -650,15 +621,6 @@ async function runAnalysis() {
   }
 }
 
-function copyOpener() {
-  const line = document.getElementById('openerLine').textContent;
-  navigator.clipboard.writeText(line).then(() => {
-    const btn = document.getElementById('copyBtn');
-    btn.classList.add('copied');
-    setTimeout(() => btn.classList.remove('copied'), 2000);
-  });
-}
-
 function buildOpener(d) {
   const vague = ['unknown', 'your area', 'n/a', ''];
   const niche = (d.niche && !vague.includes(d.niche.trim().toLowerCase())) ? d.niche : 'what you do';
@@ -688,7 +650,6 @@ function buildOpener(d) {
 
 function applyAnalysis(d, opts = {}) {
   document.getElementById('openerLine').textContent = buildOpener(d);
-  document.getElementById('copyBtn').classList.remove('copied');
 
   document.getElementById('glanceGrid').innerHTML = `
     <div class="glance-row"><span class="tick"></span><span>Type: <span class="filled">${escHtml(d.businessType === 'service' ? 'Service business' : 'Product / e-com')}</span></span></div>
@@ -773,7 +734,6 @@ function applyAnalysis(d, opts = {}) {
 function reset() {
   document.getElementById('urlInput').value = '';
   document.getElementById('openerLine').textContent = 'Loading…';
-  document.getElementById('copyBtn').classList.remove('copied');
   document.getElementById('prospectChip').classList.remove('visible');
   document.getElementById('glance').classList.remove('visible');
   document.getElementById('glanceGrid').innerHTML = `
