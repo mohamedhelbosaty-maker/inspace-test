@@ -159,6 +159,18 @@ body {
 .note-title { font-family: var(--font-mono); font-size: 10px; font-weight: 700; color: var(--ink); letter-spacing: .08em; text-transform: uppercase; margin-bottom: 4px; }
 .note-body  { font-size: 13px; color: var(--ink-58); line-height: 1.65; }
 .glance-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.q-list { display: flex; flex-direction: column; gap: 8px; }
+.q-row {
+  display: flex; align-items: flex-start; gap: 10px;
+  font-size: 13px; color: var(--ink); line-height: 1.5;
+  background: var(--white); border-radius: var(--r-12); padding: .65rem .8rem;
+}
+.q-num {
+  font-family: var(--font-mono); font-size: 10px; font-weight: 700;
+  color: var(--purple); letter-spacing: .06em;
+  flex-shrink: 0; margin-top: 3px;
+}
+.q-row.empty { color: var(--ink-58); }
 .glance-row {
   display: flex; align-items: flex-start; gap: 9px;
   font-size: 13px; color: var(--ink-58); line-height: 1.5;
@@ -354,6 +366,15 @@ body {
         <div class="card opener-card">
           <div class="card-label">Your opener</div>
           <div class="opener-line" id="openerLine">Loading…</div>
+        </div>
+
+        <div class="card">
+          <div class="card-label">Then ask</div>
+          <div class="q-list" id="questionsList">
+            <div class="q-row empty"><span class="q-num">01</span><span>Three questions tailored to this prospect</span></div>
+            <div class="q-row empty"><span class="q-num">02</span><span>Built from their AI, SEO and rank signals</span></div>
+            <div class="q-row empty"><span class="q-num">03</span><span>Ready after you run the scan</span></div>
+          </div>
         </div>
       </div>
 
@@ -603,7 +624,13 @@ async function runAnalysis() {
       },
       body: JSON.stringify({ url })
     });
-    const d = await res.json();
+    const raw = await res.text();
+    let d;
+    try {
+      d = JSON.parse(raw);
+    } catch {
+      throw new Error(`Server error ${res.status}: ${raw.slice(0, 140).replace(/<[^>]*>/g, ' ').trim()}`);
+    }
     if (res.status === 401 || res.status === 403) {
       stopLoadingSteps();
       setLoading(false);
@@ -648,8 +675,16 @@ function buildOpener(d) {
   return `${ai} ${rank} ${ask}`;
 }
 
+function renderQuestions(list) {
+  const qs = Array.isArray(list) ? list.filter(q => typeof q === 'string' && q.trim()).slice(0, 3) : [];
+  document.getElementById('questionsList').innerHTML = qs.length
+    ? qs.map((q, i) => `<div class="q-row"><span class="q-num">${String(i + 1).padStart(2, '0')}</span><span>${escHtml(q)}</span></div>`).join('')
+    : `<div class="q-row empty"><span class="q-num">—</span><span>No questions came back for this one.</span></div>`;
+}
+
 function applyAnalysis(d, opts = {}) {
   document.getElementById('openerLine').textContent = buildOpener(d);
+  renderQuestions(d.discoveryQuestions);
 
   document.getElementById('glanceGrid').innerHTML = `
     <div class="glance-row"><span class="tick"></span><span>Type: <span class="filled">${escHtml(d.businessType === 'service' ? 'Service business' : 'Product / e-com')}</span></span></div>
@@ -704,20 +739,21 @@ function applyAnalysis(d, opts = {}) {
     no:      { valCls: 'status-attn',    label: 'Not Found' },
     unclear: { valCls: 'status-neutral', label: 'Unclear' },
   };
-  const paid = paidMap[d.paidAdsActive] || paidMap.unclear;
+  const paid = paidMap[d.paidAdsActive] || { valCls: 'status-neutral', label: 'No data' };
 
   const organicMap = {
     strong:   { valCls: 'status-good', label: 'Strong'   },
     moderate: { valCls: 'status-neutral', label: 'Moderate' },
     weak:     { valCls: 'status-attn', label: 'Weak'      },
   };
-  const organic = organicMap[d.organicStrength] || organicMap.moderate;
+  const organic = organicMap[d.organicStrength] || { valCls: 'status-neutral', label: 'No data' };
 
   document.getElementById('pvoStats').innerHTML = `
     <div class="pvo-stat"><div class="pvo-stat-label">Paid Ads</div><div class="pvo-stat-value ${paid.valCls}">${paid.label}</div></div>
     <div class="pvo-stat"><div class="pvo-stat-label">Organic Reach</div><div class="pvo-stat-value ${organic.valCls}">${organic.label}</div></div>
   `;
-  document.getElementById('pvoNote').textContent = d.paidVsOrganicNote || '';
+  document.getElementById('pvoNote').textContent =
+    d.paidVsOrganicNote || 'No paid-vs-organic read came back for this one.';
 
   if (!opts.fromHistory) {
     saveHistoryEntry({
@@ -734,6 +770,11 @@ function applyAnalysis(d, opts = {}) {
 function reset() {
   document.getElementById('urlInput').value = '';
   document.getElementById('openerLine').textContent = 'Loading…';
+  document.getElementById('questionsList').innerHTML = `
+    <div class="q-row empty"><span class="q-num">01</span><span>Three questions tailored to this prospect</span></div>
+    <div class="q-row empty"><span class="q-num">02</span><span>Built from their AI, SEO and rank signals</span></div>
+    <div class="q-row empty"><span class="q-num">03</span><span>Ready after you run the scan</span></div>
+  `;
   document.getElementById('prospectChip').classList.remove('visible');
   document.getElementById('glance').classList.remove('visible');
   document.getElementById('glanceGrid').innerHTML = `
