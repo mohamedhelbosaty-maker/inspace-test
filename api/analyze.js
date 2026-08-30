@@ -7,6 +7,8 @@
 // (Project Settings → Environment Variables → Production + Preview)
 // Get a free key at https://aistudio.google.com/apikey
 
+import { verifyRequest } from './_auth.js';
+
 export const config = {
   runtime: 'nodejs',
 };
@@ -24,35 +26,43 @@ Required fields:
   "competitor": "one plausible real or realistic competitor brand in same niche",
 
   "aiVisibility": "yes" | "no" | "partial",
-  "aiProblem": "1 short sentence, plain language, NOT technical — the business problem this creates for the prospect",
-  "aiOpportunity": "1 short sentence — a concrete, specific action or content idea they could pursue to fix it",
+  "aiTalkingPoint": "4-8 word phrase the rep can say out loud — what this means for the prospect, not a technical finding. e.g. 'Competitors get recommended, you don't'",
 
   "seoActive": "yes" | "no" | "basic",
-  "seoProblem": "1 short sentence, plain language — the business problem this creates (e.g. missing traffic, invisible to searchers)",
-  "seoOpportunity": "1 short sentence — a concrete, specific content or SEO action, e.g. 'Create guides about X' — never vague technical notes like 'meta tags are present'",
+  "seoTalkingPoint": "4-8 word phrase — e.g. 'Blog posts stopped in 2023'",
 
   "googlePageNumber": number — estimated Google page (1, 2, 3, etc.) for their main niche+city keyword. Use web search to check. If rank is unknown default to 3,
-  "rankProblem": "1 short sentence, plain language — what being unranked/poorly ranked costs them in real terms",
-  "rankOpportunity": "1 short sentence — what would move the needle, ideally naming the specific keyword and competitor beating them",
+  "rankTalkingPoint": "4-8 word phrase, name the keyword or competitor when it fits — e.g. 'Beaten by [competitor] on [keyword]'",
 
-  "openingLine": "ONE sentence the SDR reads aloud almost word-for-word on a live call. MUST follow this exact structure in order: (1) a specific search query in quotes, (2) the competitor or missed opportunity found instead, (3) the prospect's problem, (4) the business impact. Pattern: 'If someone searches \\'[specific query]\\' on [Google/ChatGPT/etc], [competitor] shows up — but [Company] doesn't. That means [business impact].' Must be short enough to read in a few seconds, natural when spoken aloud, zero interpretation required, no unexplained jargon. This is the single most important field — get it right."
+  "paidAdsActive": "yes" | "no" | "unclear",
+  "organicStrength": "strong" | "moderate" | "weak",
+  "paidVsOrganicNote": "1-2 short, warm, plain-language sentences comparing their paid ad spend against their organic/SEO reach — simple and conversational, e.g. explaining if they're paying for clicks they could be getting for free, or under-investing in ads for a fast niche",
+
+  "openingLine": "Follow this exact template, filling in the brackets naturally: 'I was searching for [niche] on AI platforms like ChatGPT, Gemini, and Claude, and it was hard to find you. I found you though, on Google, on page [X]. It looks like you're doing some SEO work, so I was wondering — is there someone helping you get recommended by AI?' Keep the tone warm and genuinely curious, never accusatory. Adjust small grammar naturally if googlePageNumber is 1 (e.g. 'right on the first page' instead of 'page 1' sounding odd). This is the single most important field — match this template closely."
 }
 
 Use your web search tool to:
 1. Search '[niche] [city]' on Google to estimate their page ranking and find the actual competitor beating them for that exact query.
 2. Search the company name on ChatGPT, Perplexity, or check if they appear in AI recommendation contexts for their niche.
-3. Check their site for SEO signals (meta tags, blog, schema markup) — but only to inform the Problem/Opportunity fields, never report raw technical findings.
+3. Check their site for SEO signals (meta tags, blog, schema markup) and any visible paid advertising presence (Google Ads, social ads) to inform the talking points and Paid vs Organic fields.
 
 Hard rules:
-- Every Problem field must describe a business consequence (lost customers, invisible to searchers, confused positioning), never a technical fact on its own (e.g. never just "meta tags are missing").
-- Every Opportunity field must be a specific, actionable idea (a content topic, a positioning fix, a keyword to target) — never generic advice like "improve SEO."
-- The test for every field: would an SDR be able to say this out loud on a call and have it make sense? If not, rewrite it until it passes that test.
+- The three talkingPoint fields are SHORT PHRASES (4-8 words), not sentences. They sit next to a status label the rep is already reading, so never restate the status — if AI Visibility says "Not Found", the talking point adds why that costs them, it doesn't repeat that they're not found.
+- Every phrase must describe a real business consequence or a specific action — never vague technical jargon like "meta tags are missing."
+- The openingLine is the one thing read aloud word-for-word — it should be a full, natural sentence following the template above.
+- The paidVsOrganicNote is friendly and conversational — written like a helpful observation, not a report finding.
 - If you can't verify something, make a reasonable, specific inference — never leave a field vague.`;
 
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
     res.setHeader('Allow', 'POST');
     return res.status(405).json({ error: 'Method not allowed. Use POST.' });
+  }
+
+  // Gate: only signed-in @inspace.io accounts get past here.
+  const auth = await verifyRequest(req);
+  if (!auth.ok) {
+    return res.status(auth.status).json({ error: auth.error });
   }
 
   const apiKey = process.env.GEMINI_API_KEY;
@@ -92,7 +102,7 @@ export default async function handler(req, res) {
             role: 'user',
             parts: [
               {
-                text: `Analyze this prospect website and check their AI visibility, SEO activity, and Google ranking: ${parsed.toString()}`,
+                text: `Analyze this prospect website and check their AI visibility, SEO activity, Google ranking, and paid vs organic presence: ${parsed.toString()}`,
               },
             ],
           },
